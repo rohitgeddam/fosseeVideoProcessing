@@ -1,0 +1,167 @@
+<html>
+<head>
+  <title>Video Cutter</title>
+  <link rel="stylesheet" href="./styles/style.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+<script src="https://code.angularjs.org/1.7.9/angular.min.js">     </script>
+<script src="scripts/app.js"></script>
+<script src="scripts/controllers/appController.js"></script> 
+<script src="scripts/services/fileUploadService.js"></script> 
+<script src="scripts/directives/fileUploadDirective.js"></script>
+
+<script src="scripts/controllers/fileUplaodController.js"></script>
+<script src="scripts/directives/fileUploadDirective.js"></script>
+<script src="scripts/services/fileUploadService.js"></script>
+<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous">
+</script> -->
+  
+</head>
+
+
+
+<!-- remove after testing -->
+<style>
+
+  table, th , td  {
+    border: 1px solid grey;
+    border-collapse: collapse;
+    padding: 5px;
+  }
+  table tr:nth-child(odd) {
+    background-color: #f1f1f1;
+  }
+  table tr:nth-child(even) {
+    background-color: #ffffff;
+  }
+
+  </style>
+
+
+<body ng-app="app" ng-controller="appController">
+
+  <div class="container">
+  <!-- remove after testing -->
+  <nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">FOSSEE DJANGO/ANGULAR </a>
+  </nav>
+<div>
+  <input type="text" ng-model="tempId" value="tempId">
+
+  <input type="button" ng-click="justTest()" value="test" class="btn btn-sm btn-dark">
+</div>
+<!-- remove after testing -->
+<div ng-show="!filesLoaded" class="alert alert-danger m-4" role="alert">
+  PLEASE SELECT FILES
+ 
+</div>
+
+<div ng-show="isError" class="alert alert-danger m-4" role="alert">
+  SOMETHING WENT WRONG. TRY AGAIN!
+ 
+</div>
+
+  <div class= "row d-flex justify-content-around" >
+
+    <div class="col">
+      <span class="badge badge-warning">VIDEO FILE</span>
+      <div class="w-100"></div>
+      <input type="file" id="video" name="video" class="btn btn-danger">
+    </div>
+    
+
+    
+
+    <div class="col">
+      <span class="badge badge-warning">SRT FILE</span>
+      <div class="w-100"></div>
+      <input type="file" id="srt" name="srt" class="btn btn-danger" />
+    </div>
+
+    <div class="col-2 align-self-end">
+      <input type="button" ng-click="upload()" value="Upload"class="btn btn-warning" />
+    </div>
+     
+    <div class="col-2 align-self-end">
+      <input type="button" ng-click="process()" ng-show="uploadedSuccessfully" value="Process Video" class="btn btn-primary"/>
+    </div>
+    <!-- <div class="w-100"></div>  -->
+    <div class="w-100"></div>
+    <div ng-if="!isLoaded" id="loading-container" class="col-4 align-self-end offset-4 mt-5">
+      <div id="loading-inner">
+          <img src="http://loadinggif.com/images/image-selection/27.gif" />
+      </div>
+    
+      <h3>please wait.</h3>
+
+      
+    </div>
+   
+    
+
+    <!-- ng-show="uploadedSuccessfully"  -->
+   
+</div>
+
+<div ng-show="dataReceived" class="mt-5">
+
+  <table >
+    <tr>
+      <th>CHUNK ID</th>
+      <th>START TIME</th>
+      <th>END TIME</th>
+      <th>VIDEO</th>
+      <th>SUBTITLE</th>
+      <th>AUDIO</th>
+      <th>AUDIO RE-UPLOAD LINK</th>
+    </tr>
+    <tr ng-repeat="chunk in processResponse.chunks">
+      <td>{{ chunk.id }}</td>
+      <td>{{ chunk.startTime }}</td>
+      <td>{{ chunk.endTime }}</td>
+      <td>{{ chunk.videoChunkName }}</td>
+      <td>{{ chunk.subtitleChunk }}</td>
+      <td>{{ chunk.audioChunkName }}</td>
+     <!-- <input type="file" id="reupload" name="reupload"  style="visibility: hidden; width: 1px; height: 1px"/> -->
+      <!-- <a href="" onclick="document.getElementById('upload').click(); return false">Upload</a> -->
+       <!-- <td><a href="" ng-click="openFileDialog(chunk.id)" >re-upload</a></td> -->
+      <td>
+        <!-- <div>
+        <input type="file" id="reupload" name="reupload" />
+        </div> -->
+        <div ng-controller="myCtrl" class="btn btn-danger">
+          <input type="file" file-model="myFile" />
+          <button ng-click="uploadFile(chunk.id)" class="btn btn-warning">upload</button>
+        </div>
+     
+      </td>
+
+    </tr>
+  </table>
+
+  <div>
+    <button  class="btn btn-warning mt-4" ng-click="compile()">COMPILE</button>
+    <a target="_blank" ng-if="downloadReady" href="{{downloadFilePath}}" class="btn btn-primary mt-4 ml-4" ng-click="compile()" download>DOWNLOAD</a>
+  </div>
+  <div ng-if="!isCompiled" id="loading-container">
+    <div id="loading-inner">
+        <img src="http://loadinggif.com/images/image-selection/27.gif" />
+    </div>
+  
+    <h3>please wait.</h3>
+
+    
+  </div>
+
+</div>
+
+
+</div>
+
+
+</body>
+</html>
