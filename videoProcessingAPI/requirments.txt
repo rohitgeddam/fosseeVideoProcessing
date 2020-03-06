@@ -3,3 +3,4 @@ moviepy
 pydub
 django
 djangorestframework
+django-cors-headers
