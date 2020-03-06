@@ -1,4 +1,10 @@
-videoProcessingAPI/venv/
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+
+env/
 videoProcessingAPI/media/
 
 videoProcessingAPI/.idea/
+.idea/

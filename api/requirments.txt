@@ -1,5 +1,0 @@
-pysrt
-moviepy
-pydub
-django
-djangorestframework

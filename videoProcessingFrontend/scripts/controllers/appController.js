@@ -20,7 +20,7 @@ app.controller('appController',function($scope,$http){
 $scope.justTest = function(){
     $http({
         method: 'get',
-        url: 'http://127.0.0.1:3000/api/fetchdetails/'+ $scope.tempId,
+        url: 'http://127.0.0.1:8000/api/fetchdetails/'+ $scope.tempId,
       
       
        }).then(function successCallback(response) { 
@@ -54,7 +54,7 @@ $scope.justTest = function(){
     $scope.filesLoaded = true
     $http({
         method: 'post',
-        url: 'http://127.0.0.1:3000/api/upload/',
+        url: 'http://127.0.0.1:8000/api/upload/',
         data: fd,
         headers: {'Content-Type': undefined},
        }).then(function successCallback(response) { 
@@ -79,7 +79,7 @@ $scope.process = function(){
     $scope.isLoaded = false
     $http({
         method:'get',
-        url : "http://127.0.0.1:3000/api/process/" + $scope.operationId,
+        url : "http://127.0.0.1:8000/api/process/" + $scope.operationId,
     }).then(function success(response){
         console.log(response);
         $scope.processResponse = response.data;
@@ -95,11 +95,11 @@ $scope.compile = function(){
     $scope.isCompiled = false
     $http({
         method:'get',
-        url : "http://127.0.0.1:3000" + $scope.processResponse.downloadUrl,
+        url : "http://127.0.0.1:8000" + $scope.processResponse.downloadUrl,
     }).then(function success(response){
             
         console.log(response)
-        $scope.downloadFilePath = "http://127.0.0.1:3000"+response.data.download
+        $scope.downloadFilePath = "http://127.0.0.1:8000"+response.data.download
         console.log($scope.downloadFilePath);
         //nested http request
         $scope.downloadReady = true
