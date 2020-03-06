@@ -2,9 +2,12 @@
 ######################
 .DS_Store
 .DS_Store?
+.gitignore
 
 env/
 videoProcessingAPI/media/
 
 videoProcessingAPI/.idea/
 .idea/
+
+.vscode
