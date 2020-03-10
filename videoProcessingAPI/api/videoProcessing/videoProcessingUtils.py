@@ -42,6 +42,9 @@ def mergeVideoAndAudioToGetDownloadFile(operationId,videoPath,audioPath,pathToSa
         subprocess.call(command_for_merging_audio_video, shell=True)
 
 def mergeAudiosForDownload(audi_file_path,merged_audio_destination_path):
+    print("ERROR HERRE")
+    print(audi_file_path)
+    print(merged_audio_destination_path)
     command_for_merging_audios = f"ffmpeg -f concat -safe 0 -i {audi_file_path} -c copy {merged_audio_destination_path} -y"
     subprocess.call(command_for_merging_audios, shell=True)
 
@@ -50,7 +53,8 @@ def mergeVideoForDownload(vid_file_path,merged_video_destination_path):
     subprocess.call(command_for_merging_videos, shell=True)
 
 
-def trimVideoClipAndSave(path, startingTime, length, save_path):
+def trimAudioClipAndSave(path, startingTime, length, save_path):
+   
     command = f"ffmpeg -ss {startingTime} -i {path} -t {length} -c copy {save_path} -y"
     subprocess.call(command, shell=True)
 

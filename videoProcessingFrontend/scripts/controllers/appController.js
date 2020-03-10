@@ -41,9 +41,12 @@ $scope.justTest = function(){
 
   var fd = new FormData();
   var vidfiles = document.getElementById('video').files[0];
-  fd.append('video',vidfiles);
+ 
+  fd.append('video', vidfiles,vidfiles.name.replace(/\s/g, ''));
+
   var srtfiles = document.getElementById('srt').files[0];
-  fd.append('srt',srtfiles);
+  fd.append('srt', srtfiles,srtfiles.name.replace(/\s/g, ''));
+
 
   console.log(fd)
   if(!vidfiles || !srtfiles){

@@ -17,5 +17,7 @@ app.controller('myCtrl', ['$scope', 'fileUpload', function($scope, fileUpload,id
             fileUpload.uploadFileToUrl(file, uploadUrl,id);
         }
     };
+
+    
     
 }]);

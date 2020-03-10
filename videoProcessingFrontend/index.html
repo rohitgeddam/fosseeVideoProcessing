@@ -134,6 +134,7 @@
         <input type="file" id="reupload" name="reupload" />
         </div> -->
         <div ng-controller="myCtrl" class="btn btn-danger">
+          
           <input type="file" file-model="myFile" />
           <button ng-click="uploadFile(chunk.id)" class="btn btn-warning">upload</button>
           <div ng-if="invalidFileType">
