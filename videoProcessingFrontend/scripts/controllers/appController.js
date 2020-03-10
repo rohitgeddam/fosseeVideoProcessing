@@ -20,7 +20,7 @@ app.controller('appController',function($scope,$http){
 $scope.justTest = function(){
     $http({
         method: 'get',
-        url: 'http://127.0.0.1:8000/api/fetchdetails/'+ $scope.tempId,
+        url: 'http://127.0.0.1:8000/api/getdetails/'+ $scope.tempId,
       
       
        }).then(function successCallback(response) { 

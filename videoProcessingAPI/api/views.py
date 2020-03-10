@@ -26,6 +26,7 @@ from moviepy.editor import *
 
 
 def checkExtensionOfFileFromRequestObject(requestObject,nameOfField,extension):
+    print(requestObject.FILES[nameOfField].name)
     return requestObject.FILES[nameOfField].name.endswith(extension)
 
 
@@ -220,7 +221,7 @@ def splitVideo(request, id):
         message = {
             "message": "success",
             "time(sec)": f'Time: {time.time() - start}',
-            "path": f"/api/fetchdetails/{id}",
+            "path": f"/api/getdetails/{id}",
             "downloadUrl":f"/api/download/{id}",
             "chunks": serializeChunk.data,
         }
@@ -234,6 +235,8 @@ def splitVideo(request, id):
 @api_view(['POST'])
 def reuploadAudioChunk(request, chunk_id):
     if request.method == 'POST':
+       
+        
         #upload reuploaded audio chunk and resize it.
         chunk = Chunk.objects.get(pk=chunk_id)
         #remove files already present for uploading those files again.
@@ -253,7 +256,7 @@ def reuploadAudioChunk(request, chunk_id):
 
         videoProcessingUtils.trimVideoClipAndSave(audio_chunk_path, 0, length_of_audio_chunk, audio_chunk_save_path)
 
-        return redirect(f"/api/fetchdetails/{chunk.operationId}")
+        return redirect(f"/api/getdetails/{chunk.operationId}")
 
 
 def removeAndCreateDirectoryInSamePath(dirPath,create=True):
@@ -285,6 +288,7 @@ def writePathsToTxtFileToUseWithFFMPEG(chunks,audioFilePath,videoFilePath):
 @api_view(['GET'])
 def processAndGenerateFinalVideo(request,operationId):
     bashFiles_path = settings.MEDIA_ROOT + "bashFiles"
+    createDirectoryIfNotExists(bashFiles_path)
     #creating directory to bashFiles with operationId as name
     id_as_dir_name = bashFiles_path + f"/{operationId}/"
 
@@ -300,6 +304,7 @@ def processAndGenerateFinalVideo(request,operationId):
     merged_video_destination_path = settings.MEDIA_ROOT+f"videoSplit/{operationId}/mergedVIDEO.mp4"
 
     path__to_final_downloadable = settings.MEDIA_ROOT + "downloadable/"
+    createDirectoryIfNotExists(path__to_final_downloadable)
 
     # check to see if files already exist if exists remove it
     # removeAndCreateDirectoryInSamePath(merged_audio_destination_path,create=False)
