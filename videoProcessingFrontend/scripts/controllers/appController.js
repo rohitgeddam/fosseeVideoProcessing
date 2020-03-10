@@ -112,9 +112,4 @@ $scope.compile = function(){
     })
 }
 
-
-
-
-
-    
 });

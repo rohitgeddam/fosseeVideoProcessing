@@ -288,54 +288,57 @@ def processAndGenerateFinalVideo(request,operationId):
     #creating directory to bashFiles with operationId as name
     id_as_dir_name = bashFiles_path + f"/{operationId}/"
 
-    try:
-        removeAndCreateDirectoryInSamePath(id_as_dir_name)
-        chunks = Chunk.objects.all().filter(operationId=operationId)
+    # try:
+    removeAndCreateDirectoryInSamePath(id_as_dir_name)
+    chunks = Chunk.objects.all().filter(operationId=operationId)
 
 
-        audi_file_path = f"{bashFiles_path}/{operationId}/{operationId}AUDI.txt"
-        vid_file_path = f"{bashFiles_path}/{operationId}/{operationId}VID.txt"
+    audi_file_path = f"{bashFiles_path}/{operationId}/{operationId}AUDI.txt"
+    vid_file_path = f"{bashFiles_path}/{operationId}/{operationId}VID.txt"
 
-        merged_audio_destination_path = settings.MEDIA_ROOT+f"audioSplit/{operationId}/mergedAUDIO.mp3"
-        merged_video_destination_path = settings.MEDIA_ROOT+f"videoSplit/{operationId}/mergedVIDEO.mp4"
+    merged_audio_destination_path = settings.MEDIA_ROOT+f"audioSplit/{operationId}/mergedAUDIO.mp3"
+    merged_video_destination_path = settings.MEDIA_ROOT+f"videoSplit/{operationId}/mergedVIDEO.mp4"
 
-        path__to_final_downloadable = settings.MEDIA_ROOT + "downloadable/"
+    path__to_final_downloadable = settings.MEDIA_ROOT + "downloadable/"
 
-        # check to see if files already exist if exists remove it
-        removeAndCreateDirectoryInSamePath(merged_audio_destination_path,create=False)
+    # check to see if files already exist if exists remove it
+    # removeAndCreateDirectoryInSamePath(merged_audio_destination_path,create=False)
 
-        writePathsToTxtFileToUseWithFFMPEG(chunks,audi_file_path,vid_file_path)
+    if os.path.exists(merged_audio_destination_path):
+        os.remove(merged_audio_destination_path)
+
+    writePathsToTxtFileToUseWithFFMPEG(chunks,audi_file_path,vid_file_path)
 
 
-        # use the above files to combne audios and videos
-        videoProcessingUtils.mergeAudiosForDownload(audio_file_path,merged_audio_destination_path)
-        videoProcessingUtils.mergeVideoForDownload(vid_file_path,merged_video_destination_path)
+    # use the above files to combne audios and videos
+    videoProcessingUtils.mergeAudiosForDownload(audi_file_path,merged_audio_destination_path)
+    videoProcessingUtils.mergeVideoForDownload(vid_file_path,merged_video_destination_path)
 
-        if not os.path.exists(merged_audio_destination_path) and not os.path.exists(merged_video_destination_path):
-            return Response({
-                "message" : "failed to create bash ffmpeg comand file",
-            })
-
-        videoProcessingUtils.mergeVideoAndAudioToGetDownloadFile(operationId,merged_video_destination_path,merged_audio_destination_path,path__to_final_downloadable)
-
-        #save path of final downloadable file in db
-        videoInstance = VideoModel.objects.get(pk = operationId)
-        result = FusedResult(
-            operationId=videoInstance,
-            videoPath = f"{path__to_final_downloadable}{operationId}.mp4",
-            videoName= f"{operationId}VIDEO.mp4",
-            videoUrl= settings.MEDIA_URL + f"downloadable/{operationId}.mp4",
-        )
-        result.save()
-
-        response = Response({
-        "message": "combined all video anc audio chunk into one file",
-        "name_of_file" : result.videoName,
-        "download" : result.videoUrl
+    if not os.path.exists(merged_audio_destination_path) and not os.path.exists(merged_video_destination_path):
+        return Response({
+            "message" : "failed to create bash ffmpeg comand file",
         })
-    except:
-        response = Response({
-            "message":"Error occured while processing."
-        },status=status.HTTP_409_CONFLICT)
+
+    videoProcessingUtils.mergeVideoAndAudioToGetDownloadFile(operationId,merged_video_destination_path,merged_audio_destination_path,path__to_final_downloadable)
+
+    #save path of final downloadable file in db
+    videoInstance = VideoModel.objects.get(pk = operationId)
+    result = FusedResult(
+        operationId=videoInstance,
+        videoPath = f"{path__to_final_downloadable}{operationId}.mp4",
+        videoName= f"{operationId}VIDEO.mp4",
+        videoUrl= settings.MEDIA_URL + f"downloadable/{operationId}.mp4",
+    )
+    result.save()
+
+    response = Response({
+    "message": "combined all video anc audio chunk into one file",
+    "name_of_file" : result.videoName,
+    "download" : result.videoUrl
+    })
+    # except:
+    #     response = Response({
+    #         "message":"Error occured while processing."
+    #     },status=status.HTTP_409_CONFLICT)
 
     return response
