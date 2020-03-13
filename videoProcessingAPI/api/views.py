@@ -20,61 +20,18 @@ import datetime
 
 #imports for video manipulation
 from api.videoProcessing import videoProcessingUtils
+from api.miscFunctions import misc
+
 import pysrt
 from pydub import AudioSegment
 from moviepy.editor import *
-
-
-def checkExtensionOfFileFromRequestObject(requestObject,nameOfField,extension):
-    print(requestObject.FILES[nameOfField].name)
-    return requestObject.FILES[nameOfField].name.endswith(extension)
-
-
-def handleUploadedFilesAndSave(request):
-
-    listOfResponses = {
-        "fieldRequired" : Response({
-            "message": "Field is Required"},
-            status=status.HTTP_400_BAD_REQUEST
-        ),
-
-        "invalidFileFormat" : Response({
-            'message': "invalid file type/s",},
-            status=status.HTTP_400_BAD_REQUEST
-        ),
-    }
-
-    try:
-        videoInstance = VideoModel(video=request.FILES['video'],path=os.path.join(settings.MEDIA_ROOT,f"videos/{request.FILES['video'].name}"))
-        srtInstance = SrtModel(srt=request.FILES['srt'], path=os.path.join(settings.MEDIA_ROOT,f"srts/{request.FILES['srt'].name}"))
-    except:
-        return listOfResponses['fieldRequired']
-
-    if checkExtensionOfFileFromRequestObject(request, "video", ".mp4") and checkExtensionOfFileFromRequestObject(request, "srt", ".srt"):
-        pass
-    else:
-        return listOfResponses['invalidFileFormat']
-
-    videoInstance.save()
-    srtInstance.save()
-
-    serializeVideo = serializeObject(VideoFileSerializer,videoInstance)
-    serializeSrt =  serializeObject(SrtFileSerializer,srtInstance)
-
-
-    return (serializeVideo,serializeSrt)
-
-
-
-def serializeObject(serializerClass,objectToSerialize,many=False):
-    return serializerClass(objectToSerialize,many=many)
 
 
 @api_view(['POST'])
 def uploadFilesToServer(request):
 
     if request.method == 'POST':
-        serializeVideo,serializeSrt = handleUploadedFilesAndSave(request)
+        serializeVideo,serializeSrt = misc.handleUploadedFilesAndSave(request)
         message = {
             'operationId': serializeVideo.data['id'],
             "message": "files uploaded successfully",
@@ -103,8 +60,8 @@ def getListOfPreviouslyProcessedVideos(request):
   if request.method == 'GET':
         videos = VideoModel.objects.all()
         srts = SrtModel.objects.all()
-        serializeVideo = serializeObject(VideoFileSerializer,videos,many=True)
-        serializeSrt =   serializeObject(SrtFileSerializer,srts,many=True)
+        serializeVideo = misc.serializeObject(VideoFileSerializer,videos,many=True)
+        serializeSrt =   misc.serializeObject(SrtFileSerializer,srts,many=True)
         message = {
             # "operationId" : serializeVideo.data['id'],
             "video" : serializeVideo.data,
@@ -112,31 +69,7 @@ def getListOfPreviouslyProcessedVideos(request):
         }
 
 
-def createDirectoryIfNotExists(pathToDirectory,dirName=''):
 
-    pathToCheckFor = pathToDirectory + dirName
-    if not os.path.exists(pathToCheckFor):
-        os.makedirs(pathToCheckFor)
-    return pathToCheckFor
-
-
-def splitAudioAndVideoIntoChunk(videoToSplit,audioToSplit, chunkData):
-    splitedVideoChunk = videoToSplit.subclip(
-            videoProcessingUtils.convertTimeToSeconds(chunkData.start.hours, chunkData.start.minutes,
-                                                      chunkData.start.seconds, chunkData.start.milliseconds),
-            videoProcessingUtils.convertTimeToSeconds(chunkData.end.hours, chunkData.end.minutes,
-                                                      chunkData.end.seconds,
-                                                      chunkData.end.milliseconds))
-
-    splitedAudioChunk = audioToSplit[
-                 videoProcessingUtils.convertTimeToSeconds(chunkData.start.hours, chunkData.start.minutes, chunkData.start.seconds,
-                                                           chunkData.start.milliseconds) * 1000:videoProcessingUtils.convertTimeToSeconds(
-                     chunkData.end.hours,
-                     chunkData.end.minutes,
-                     chunkData.end.seconds,
-                     chunkData.end.milliseconds) * 1000]
-
-    return splitedVideoChunk,splitedAudioChunk
 
 @api_view(['GET'])
 def splitVideo(request, id):
@@ -155,10 +88,10 @@ def splitVideo(request, id):
         srtInstance = videoProcessingUtils.SRT(srtFile.path)
         videoInstance = videoProcessingUtils.VideoClip(videoFile.path)
 
-        pathToOnlyAudioDir = createDirectoryIfNotExists(settings.MEDIA_ROOT,"onlyAudio")
+        pathToOnlyAudioDir = misc.createDirectoryIfNotExists(settings.MEDIA_ROOT,"onlyAudio")
         onlyAudioPath = videoInstance.extractAudioFromVideoAndSave(pathToOnlyAudioDir, f'{id}.mp3')
 
-        pathToOnlyAudioDir = createDirectoryIfNotExists(settings.MEDIA_ROOT,"videoWithoutAudio")
+        pathToOnlyAudioDir = misc.createDirectoryIfNotExists(settings.MEDIA_ROOT,"videoWithoutAudio")
         onlyVideoPath = videoInstance.removeAudioFromVideoAndSave(pathToOnlyAudioDir, f'{id}.mp4')
 
         videoToBeSplittedIntoChunks = VideoFileClip(onlyVideoPath)
@@ -167,8 +100,8 @@ def splitVideo(request, id):
         pathToStoreChunksOfSplitedVideo = settings.MEDIA_ROOT + f'videoSplit/{id}'
         pathToStoreChunksOfSplitedAudio = settings.MEDIA_ROOT + f'audioSplit/{id}'
 
-        createDirectoryIfNotExists(pathToStoreChunksOfSplitedVideo)
-        createDirectoryIfNotExists(pathToStoreChunksOfSplitedAudio)
+        misc.createDirectoryIfNotExists(pathToStoreChunksOfSplitedVideo)
+        misc.createDirectoryIfNotExists(pathToStoreChunksOfSplitedAudio)
 
         srtData = srtInstance.extractSrtData()
 
@@ -178,7 +111,7 @@ def splitVideo(request, id):
         for chunk in srtData:
             try:
 
-                videoPart,audioPart = splitAudioAndVideoIntoChunk(videoToBeSplittedIntoChunks,audioToBeSplittedIntoChunks,chunk)
+                videoPart,audioPart = misc.splitAudioAndVideoIntoChunk(videoToBeSplittedIntoChunks,audioToBeSplittedIntoChunks,chunk)
 
                 videoChunkPath = settings.MEDIA_ROOT + f'/videoSplit/{id}/{i}.mp4'
                 audioChunkPath = settings.MEDIA_ROOT + f'/audioSplit/{id}/{i}.mp3'
@@ -215,7 +148,7 @@ def splitVideo(request, id):
         #fetching data from db.
         videoInstance = VideoModel.objects.get(pk=id)
         chunks = videoInstance.rel.all()
-        serializeChunk = serializeObject(ChunkSerializer,chunks, many=True)
+        serializeChunk = misc.serializeObject(ChunkSerializer,chunks, many=True)
 
 
         # deleting original files to save space
@@ -268,41 +201,22 @@ def reuploadAudioChunk(request, chunk_id):
         return redirect(f"/api/getdetails/{chunk.operationId}")
 
 
-def removeAndCreateDirectoryInSamePath(dirPath,create=True):
-    if os.path.exists(dirPath):
-        shutil.rmtree(dirPath)
-    if create==True:
-        os.mkdir(dirPath)
 
 
 
-def writePathsToTxtFileToUseWithFFMPEG(chunks,audioFilePath,videoFilePath):
-    audiFile = open(audioFilePath, 'a')
-    vidFile = open(videoFilePath, 'a')
-    # removeing the last slash as its causing problem
-    # -7 to strip last 7 characters in settings.MEDIA_ROOT to avoid repetition.
-    media_path = settings.MEDIA_ROOT[:-7]
 
-    for chunk in chunks:
-        audio_chunk_path = media_path + chunk.audioChunkPath
-
-        video_chunk_path = media_path + chunk.videoChunkPath
-        audiFile.write(f"file '{audio_chunk_path}'\n")
-        vidFile.write(f"file '{video_chunk_path}'\n")
-    audiFile.close()
-    vidFile.close()
 
 
 
 @api_view(['GET'])
 def processAndGenerateFinalVideo(request,operationId):
     bashFiles_path = settings.MEDIA_ROOT + "bashFiles"
-    createDirectoryIfNotExists(bashFiles_path)
+    misc.createDirectoryIfNotExists(bashFiles_path)
     #creating directory to bashFiles with operationId as name
     id_as_dir_name = bashFiles_path + f"/{operationId}/"
 
     try:
-        removeAndCreateDirectoryInSamePath(id_as_dir_name)
+        misc.removeAndCreateDirectoryInSamePath(id_as_dir_name)
         chunks = Chunk.objects.all().filter(operationId=operationId)
 
 
@@ -313,7 +227,7 @@ def processAndGenerateFinalVideo(request,operationId):
         merged_video_destination_path = settings.MEDIA_ROOT+f"videoSplit/{operationId}/mergedVIDEO.mp4"
 
         path__to_final_downloadable = settings.MEDIA_ROOT + "downloadable/"
-        createDirectoryIfNotExists(path__to_final_downloadable)
+        misc.createDirectoryIfNotExists(path__to_final_downloadable)
 
         # check to see if files already exist if exists remove it
         # removeAndCreateDirectoryInSamePath(merged_audio_destination_path,create=False)
@@ -321,7 +235,7 @@ def processAndGenerateFinalVideo(request,operationId):
         if os.path.exists(merged_audio_destination_path):
             os.remove(merged_audio_destination_path)
 
-        writePathsToTxtFileToUseWithFFMPEG(chunks,audi_file_path,vid_file_path)
+        misc.writePathsToTxtFileToUseWithFFMPEG(chunks,audi_file_path,vid_file_path)
 
 
         # use the above files to combne audios and videos

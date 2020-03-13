@@ -6,7 +6,9 @@ app.controller('appController',function($scope,$http){
     $scope.processResponse = ''
     $scope.isError = false;
     $scope.isLoaded = true
+
     $scope.filesLoaded = true
+
     $scope.downloadReady = false
     $scope.isCompiled = true
     // to hide show the table
@@ -14,46 +16,33 @@ app.controller('appController',function($scope,$http){
     // remove after testing
     $scope.tempId = ''
     $scope.reuploadAudioFile = '';
-    
 
-
-$scope.justTest = function(){
-    $http({
-        method: 'get',
-        url: 'http://127.0.0.1:8000/api/getdetails/'+ $scope.tempId,
-      
-      
-       }).then(function successCallback(response) { 
-         // Store response data
-         $scope.processResponse = response.data;
-         console.log($scope.processResponse)
-         $scope.dataReceived = true;
-      
-       });
-
-
-}
 
 
  $scope.upload = function(){
- 
- 
+    console.log($scope.filesLoaded);
 
   var fd = new FormData();
   var vidfiles = document.getElementById('video').files[0];
- 
-  fd.append('video', vidfiles,vidfiles.name.replace(/\s/g, ''));
-
   var srtfiles = document.getElementById('srt').files[0];
-  fd.append('srt', srtfiles,srtfiles.name.replace(/\s/g, ''));
+
+
+
 
 
   console.log(fd)
+
   if(!vidfiles || !srtfiles){
-        $scope.filesLoaded = false
+    $scope.filesLoaded = false;
+  
   }
+ 
   // AJAX request
   else{
+    fd.append('video', vidfiles,vidfiles.name.replace(/\s/g, ''));
+
+
+    fd.append('srt', srtfiles,srtfiles.name.replace(/\s/g, ''));
     $scope.filesLoaded = true
     $http({
         method: 'post',

@@ -1,6 +1,11 @@
 app.controller('myCtrl', ['$scope', 'fileUpload', function($scope, fileUpload,id){
-    invalidFileType = false
+    $scope.invalidFileType = false
+
+    $scope.clickedOnUploadButton = false 
+
     $scope.uploadFile = function(id){
+     
+
         var file = $scope.myFile;
         // file.name = id+'.mp3';
         // console.log(file)
@@ -15,6 +20,7 @@ app.controller('myCtrl', ['$scope', 'fileUpload', function($scope, fileUpload,id
         else{
             $scope.invalidFileType = false
             fileUpload.uploadFileToUrl(file, uploadUrl,id);
+            $scope.clickedOnUploadButton = true;
         }
     };
 

@@ -25,37 +25,20 @@
 
 
 <!-- remove after testing -->
-<style>
-
-  table, th , td  {
-    border: 1px solid grey;
-    border-collapse: collapse;
-    padding: 5px;
-  }
-  table tr:nth-child(odd) {
-    background-color: #f1f1f1;
-  }
-  table tr:nth-child(even) {
-    background-color: #ffffff;
-  }
-
-  </style>
 
 
 <body ng-app="app" ng-controller="appController">
 
+
   <div class="container">
   <!-- remove after testing -->
-  <nav class="navbar navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">FOSSEE DJANGO/ANGULAR </a>
+  <nav class="navbar navbar-dark bg-dark header">
+    <a class="navbar-brand " href="#">FOSSEE DJANGO/ANGULAR TASK - 1</a>
   </nav>
-<div>
-  <input type="text" ng-model="tempId" value="tempId">
 
-  <input type="button" ng-click="justTest()" value="test" class="btn btn-sm btn-dark">
-</div>
+
 <!-- remove after testing -->
-<div ng-show="!filesLoaded" class="alert alert-danger m-4" role="alert">
+<div ng-show="!filesLoaded" class="alert alert-danger m-4 error-message" role="alert">
   PLEASE SELECT FILES
  
 </div>
@@ -65,6 +48,10 @@
  
 </div>
 
+
+
+
+<div class="btn-controls-top">
   <div class= "row d-flex justify-content-around" >
 
     <div class="col">
@@ -83,7 +70,7 @@
     </div>
 
     <div class="col-2 align-self-end">
-      <input type="button" ng-click="upload()" value="Upload"class="btn btn-warning" />
+      <input type="button" ng-click="upload()" value="Upload Files"class="btn btn-warning" />
     </div>
      
     <div class="col-2 align-self-end">
@@ -91,12 +78,14 @@
     </div>
     <!-- <div class="w-100"></div>  -->
     <div class="w-100"></div>
+
+
     <div ng-if="!isLoaded" id="loading-container" class="col-4 align-self-end offset-4 mt-5">
       <div id="loading-inner">
           <img src="http://loadinggif.com/images/image-selection/27.gif" />
       </div>
     
-      <h3>please wait.</h3>
+    
 
       
     </div>
@@ -107,20 +96,24 @@
    
 </div>
 
+
+
+</div>
+
 <div ng-show="dataReceived" class="mt-5">
 
   <table >
     <tr>
-      <th>CHUNK ID</th>
+      <th>CHUNK</th>
       <th>START TIME</th>
       <th>END TIME</th>
-      <th>VIDEO</th>
+      <th>VIDEO SEQUENCE NUMBER</th>
       <th>SUBTITLE</th>
       <th>AUDIO</th>
-      <th>AUDIO RE-UPLOAD LINK</th>
+      <th>AUDIO RE-UPLOAD</th>
     </tr>
     <tr ng-repeat="chunk in processResponse.chunks">
-      <td>{{ chunk.id }}</td>
+      <td>{{ chunk.me }}</td>
       <td>{{ chunk.startTime }}</td>
       <td>{{ chunk.endTime }}</td>
       <td>{{ chunk.videoChunkName }}</td>
@@ -133,12 +126,15 @@
         <!-- <div>
         <input type="file" id="reupload" name="reupload" />
         </div> -->
-        <div ng-controller="myCtrl" class="btn btn-danger">
+        <div ng-controller="myCtrl" class="btn btn-danger" >
           
           <input type="file" file-model="myFile" />
           <button ng-click="uploadFile(chunk.id)" class="btn btn-warning">upload</button>
-          <div ng-if="invalidFileType">
+          <div ng-if="invalidFileType" class="reupload-file-message">
             <p>Invalid file type. please upload a mp3 file</p>
+          </div>
+          <div ng-if="clickedOnUploadButton" class="reupload-file-message">
+            <p>uploaded successfully click compile at the bottom.</p>
           </div>
        
         </div>
@@ -148,19 +144,23 @@
     </tr>
   </table>
 
-  <div>
-    <button  class="btn btn-warning mt-4" ng-click="compile()">COMPILE</button>
-    <a target="_blank" ng-if="downloadReady" href="{{downloadFilePath}}" class="btn btn-primary mt-4 ml-4" ng-click="compile()" download>DOWNLOAD</a>
-  </div>
-  <div ng-if="!isCompiled" id="loading-container">
-    <div id="loading-inner">
-        <img src="http://loadinggif.com/images/image-selection/27.gif" />
+  <div class="btn-controls-bottom">
+    <div ng-if="!isCompiled" id="loading-container" class="compile-loading">
+      <div id="loading-inner">
+          <img src="http://loadinggif.com/images/image-selection/27.gif" />
+      </div>
     </div>
-  
-    <h3>please wait.</h3>
-
+    <div>
+      <button  class="btn btn-warning mt-4 btn-custom" ng-click="compile()">COMPILE</button>
+      <a target="_blank" ng-if="downloadReady" href="{{downloadFilePath}}" class="btn btn-primary mt-4 ml-4 btn-custom" ng-click="compile()" download>DOWNLOAD</a>
+    </div>
+    
     
   </div>
+ 
+
+    
+ 
 
 </div>
 
