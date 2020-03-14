@@ -109,8 +109,8 @@ def splitVideo(request, id):
 
                 videoPart,audioPart = misc.splitAudioAndVideoIntoChunk(videoToBeSplittedIntoChunks,audioToBeSplittedIntoChunks,chunk)
 
-                videoChunkPath = settings.MEDIA_ROOT + f'/videoSplit/{id}/{i}.mp4'
-                audioChunkPath = settings.MEDIA_ROOT + f'/audioSplit/{id}/{i}.mp3'
+                videoChunkPath = settings.MEDIA_ROOT + f'videoSplit/{id}/{i}.mp4'
+                audioChunkPath = settings.MEDIA_ROOT + f'audioSplit/{id}/{i}.mp3'
                 #saving video cunk
                 videoPart.write_videofile(videoChunkPath )
                 #saving audio chunk
