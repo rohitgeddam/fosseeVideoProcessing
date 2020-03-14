@@ -40,19 +40,19 @@ def uploadFilesToServer(request):
     return Response(message,status=status.HTTP_201_CREATED)
 
 
-# @api_view(['GET'])
-# def getVideoDetails(request, id):
-#     if request.method == 'GET':
-#         video = VideoModel.objects.get(pk=id)
-#         chunks = video.rel.all()
-#         serializeChunk = ChunkSerializer(chunks, many=True)
-#         message = {
-#             "message" : "success",
-#             "downloadUrl": f"/api/download/{id}",
-#             "chunks" : serializeChunk.data,
-#         }
-#
-#         return Response(message,status=status.HTTP_200_OK)
+@api_view(['GET'])
+def getVideoDetails(request, id):
+    if request.method == 'GET':
+        video = VideoModel.objects.get(pk=id)
+        chunks = video.rel.all()
+        serializeChunk = ChunkSerializer(chunks, many=True)
+        message = {
+            "message" : "success",
+            "downloadUrl": f"/api/download/{id}",
+            "chunks" : serializeChunk.data,
+        }
+
+        return Response(message,status=status.HTTP_200_OK)
 
 # @api_view(['GET'])
 # def getListOfPreviouslyProcessedVideos(request):
@@ -177,7 +177,16 @@ def reuploadAudioChunk(request, chunk_id):
        
         
         #upload reuploaded audio chunk and resize it.
-        chunk = Chunk.objects.get(pk=chunk_id)
+
+        try:
+            chunk = Chunk.objects.get(pk=chunk_id)
+        except:
+            return Response(
+                {
+                    "message" : "cannot retrieve from database"
+                }
+            )
+
         #remove files already present for uploading those files again.
         remove_file_path_1 = settings.MEDIA_ROOT + f"audioSplit/{chunk.operationId}/{chunk.me}.mp3"
         remove_file_path_2 = settings.MEDIA_ROOT + f"re-uploads/{chunk.id}.mp3"
