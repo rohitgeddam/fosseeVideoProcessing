@@ -74,14 +74,11 @@ def getVideoDetails(request, id):
 def splitVideo(request, id):
     if request.method == "GET":
         start = time.time()
-        try:
-            videoFile = VideoModel.objects.get(id=id)
+
+        videoFile = VideoModel.objects.get(id=id)
             # fetch srt location by id
-            srtFile = SrtModel.objects.get(id=id)
-        except:
-            return Response({
-                "message": "Matching query dosen't exist"
-            })
+        srtFile = SrtModel.objects.get(id=id)
+
 
         #open srt file
         srtInstance = videoProcessingUtils.SRT(srtFile.path)
@@ -150,11 +147,14 @@ def splitVideo(request, id):
         serializeChunk = misc.serializeObject(ChunkSerializer,chunks, many=True)
 
 
-        # deleting original files to save space
-        if os.path.exists(srtFile.path):
-            os.remove(srtFile.path)
-        if os.path.exists(videoFile.path):
-            os.remove(videoFile.path)
+        if(not settings.IS_UNDER_TEST_ENVIRONMENT):
+            # deleting original files to save space
+            if os.path.exists(srtFile.path):
+                os.remove(srtFile.path)
+            if os.path.exists(videoFile.path):
+                os.remove(videoFile.path)
+
+
 
         #building response object
         message = {
@@ -273,7 +273,7 @@ def processAndGenerateFinalVideo(request,operationId):
         "message": "combined all video anc audio chunk into one file",
         "name_of_file" : result.videoName,
         "download" : result.videoUrl
-        })
+        },status=status.HTTP_200_OK)
 
 
 

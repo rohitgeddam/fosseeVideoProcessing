@@ -15,70 +15,108 @@ from django.conf import settings
 from django.core.files import File
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from api.models import VideoModel ,SrtModel ,Chunk,FusedResult,AudioModel
+from .models import VideoModel ,SrtModel ,Chunk,FusedResult,AudioModel
 
 class TestViews(APITestCase):
 
-    def _create_upload_test_file(self,video_path,srt_path):
+    def setUp(self):
+        settings.IS_UNDER_TEST_ENVIRONMENT = True
+
+        self.client = APIClient()
+        self.video_path = os.path.join(settings.BASE_DIR, "test_files/test.mp4")
+        self.srt_path = os.path.join(settings.BASE_DIR, "test_files/test.srt")
+        self.reupload_audio_path = os.path.join(settings.BASE_DIR, "api/test_files/reupload_test.mp3")
+
+        self.video_file = SimpleUploadedFile(self.video_path, b"file_content", content_type="video/mp4")
+        self.srt_file = SimpleUploadedFile(self.srt_path, b"file_content", content_type="text/plain")
+        self.reupload_audio_chunk = SimpleUploadedFile(self.reupload_audio_path,b"file_content",content_type="audio/mp3")
 
 
-        video_file = SimpleUploadedFile(video_path,b"file_content",content_type="video/mp4")
-        srt_file = SimpleUploadedFile(srt_path,b"file_content",content_type="text/plain")
-        return {
-            "video" : video_file,
-            "srt" : srt_file
-        }
+
+        VideoModel.objects.create(
+            video=self.video_file,
+            path=self.video_path
+        )
+
+        SrtModel.objects.create(
+            srt=self.srt_file,
+            path=self.srt_path,
+        )
+
+        AudioModel.objects.create(
+            audio = self.reupload_audio_chunk,
+            path = self.reupload_audio_path,
+        )
 
 
-    def _create_reupload_test_file(self, audio_path):
+    # def _create_upload_test_file(self,video_path,srt_path):
+    #
+    #
+    #     video_file = SimpleUploadedFile(video_path,b"file_content",content_type="video/mp4")
+    #     srt_file = SimpleUploadedFile(srt_path,b"file_content",content_type="text/plain")
+    #
+    #
+    #     return {
+    #         "video" : video_file,
+    #         "srt" : srt_file
+    #     }
 
 
-        audio_chunk = SimpleUploadedFile(audio_path,b"file_content",content_type="audio/mp3")
+    # def _create_reupload_test_file(self, audio_path):
+    #
+    #
+    #     audio_chunk = SimpleUploadedFile(audio_path,b"file_content",content_type="audio/mp3")
+    #
+    #     return {
+    #         "file" : audio_chunk,
+    #     }
 
-        return {
-            "file" : audio_chunk,
-        }
 
     def test_upload_file(self):
-        test_video_path = os.path.join(settings.BASE_DIR,"./test_files/test.mp4")
-        test_srt_path = os.path.join(settings.BASE_DIR,"./test_files/test.srt")
-        url = reverse("file-upload")
-        data = self._create_upload_test_file(test_video_path, test_srt_path)
 
-        client = APIClient()
-        response = client.post(url,data,format="multipart")
+
+        url = reverse("file-upload")
+
+        data = {
+            "video":self.video_file,
+            "srt" : self.srt_file,
+        }
+
+        response = self.client.post(url,data,format="multipart")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
 
 
+
     def test_video_split(self):
 
-        client = APIClient()
+        operation_id = VideoModel.objects.all().first().pk
 
-        operation_id = 1
         url = reverse("process", kwargs={'id':operation_id})
-        response= client.get(url)
+        response= self.client.get(url)
+
+
 
         self.assertEqual(response.status_code,status.HTTP_200_OK)
-        # chunk = Chunk.objects.all()
-        # print(chunk)
 
 #
 
 
-    def test_audio_chunk_reupload(self):
-        test_audio_path = os.path.join(settings.BASE_DIR,"./test_files/reupload_test.mp3")
-        data = self._create_reupload_test_file(test_audio_path)
 
-        audio_chunk_id = 1
-        url = reverse("audio-reupload", kwargs={'chunk_id':audio_chunk_id})
-        # client = RequestsClient()
-        client = APIClient()
-        # response = client.post('http://testserver/api/reupload/1',data,format="multipart")
-        response = client.post(url,data,format="multipart")
-        self.assertEqual(response.status_code,status.HTTP_200_OK)
+    def test_get_details(self):
+
+        operation_id = VideoModel.objects.all().first().pk
+
+        url = reverse("get-details",kwargs={"id":operation_id})
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-
+    def test_download(self):
+        operation_id = VideoModel.objects.all().first().pk
+        url = reverse("download",kwargs={"operationId":operation_id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
