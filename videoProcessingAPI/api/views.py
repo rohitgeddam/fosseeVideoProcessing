@@ -40,19 +40,19 @@ def uploadFilesToServer(request):
     return Response(message,status=status.HTTP_201_CREATED)
 
 
-# @api_view(['GET'])
-# def getVideoDetails(request, id):
-#     if request.method == 'GET':
-#         video = VideoModel.objects.get(pk=id)
-#         chunks = video.rel.all()
-#         serializeChunk = ChunkSerializer(chunks, many=True)
-#         message = {
-#             "message" : "success",
-#             "downloadUrl": f"/api/download/{id}",
-#             "chunks" : serializeChunk.data,
-#         }
-#
-#         return Response(message,status=status.HTTP_200_OK)
+@api_view(['GET'])
+def getVideoDetails(request, id):
+    if request.method == 'GET':
+        video = VideoModel.objects.get(pk=id)
+        chunks = video.rel.all()
+        serializeChunk = ChunkSerializer(chunks, many=True)
+        message = {
+            "message" : "success",
+            "downloadUrl": f"/api/download/{id}",
+            "chunks" : serializeChunk.data,
+        }
+
+        return Response(message,status=status.HTTP_200_OK)
 
 # @api_view(['GET'])
 # def getListOfPreviouslyProcessedVideos(request):
@@ -74,14 +74,11 @@ def uploadFilesToServer(request):
 def splitVideo(request, id):
     if request.method == "GET":
         start = time.time()
-        try:
-            videoFile = VideoModel.objects.get(id=id)
+
+        videoFile = VideoModel.objects.get(id=id)
             # fetch srt location by id
-            srtFile = SrtModel.objects.get(id=id)
-        except:
-            return Response({
-                "message": "Matching query dosen't exist"
-            })
+        srtFile = SrtModel.objects.get(id=id)
+
 
         #open srt file
         srtInstance = videoProcessingUtils.SRT(srtFile.path)
@@ -112,8 +109,8 @@ def splitVideo(request, id):
 
                 videoPart,audioPart = misc.splitAudioAndVideoIntoChunk(videoToBeSplittedIntoChunks,audioToBeSplittedIntoChunks,chunk)
 
-                videoChunkPath = settings.MEDIA_ROOT + f'/videoSplit/{id}/{i}.mp4'
-                audioChunkPath = settings.MEDIA_ROOT + f'/audioSplit/{id}/{i}.mp3'
+                videoChunkPath = settings.MEDIA_ROOT + f'videoSplit/{id}/{i}.mp4'
+                audioChunkPath = settings.MEDIA_ROOT + f'audioSplit/{id}/{i}.mp3'
                 #saving video cunk
                 videoPart.write_videofile(videoChunkPath )
                 #saving audio chunk
@@ -150,11 +147,14 @@ def splitVideo(request, id):
         serializeChunk = misc.serializeObject(ChunkSerializer,chunks, many=True)
 
 
-        # deleting original files to save space
-        if os.path.exists(srtFile.path):
-            os.remove(srtFile.path)
-        if os.path.exists(videoFile.path):
-            os.remove(videoFile.path)
+        if(not settings.IS_UNDER_TEST_ENVIRONMENT):
+            # deleting original files to save space
+            if os.path.exists(srtFile.path):
+                os.remove(srtFile.path)
+            if os.path.exists(videoFile.path):
+                os.remove(videoFile.path)
+
+
 
         #building response object
         message = {
@@ -177,7 +177,16 @@ def reuploadAudioChunk(request, chunk_id):
        
         
         #upload reuploaded audio chunk and resize it.
-        chunk = Chunk.objects.get(pk=chunk_id)
+
+        try:
+            chunk = Chunk.objects.get(pk=chunk_id)
+        except:
+            return Response(
+                {
+                    "message" : "cannot retrieve from database"
+                }
+            )
+
         #remove files already present for uploading those files again.
         remove_file_path_1 = settings.MEDIA_ROOT + f"audioSplit/{chunk.operationId}/{chunk.me}.mp3"
         remove_file_path_2 = settings.MEDIA_ROOT + f"re-uploads/{chunk.id}.mp3"
@@ -264,7 +273,7 @@ def processAndGenerateFinalVideo(request,operationId):
         "message": "combined all video anc audio chunk into one file",
         "name_of_file" : result.videoName,
         "download" : result.videoUrl
-        })
+        },status=status.HTTP_200_OK)
 
 
 
