@@ -10,10 +10,9 @@ from django.shortcuts import  redirect
 from django.conf import settings
 
 # python core modules
-import os
-import shutil
+
 import time
-import subprocess
+
 import datetime
 
 
@@ -38,36 +37,36 @@ def uploadFilesToServer(request):
             "operation_url": f"/api/process/{serializeVideo.data['id']}"
         }
 
-    return Response(message)
+    return Response(message,status=status.HTTP_201_CREATED)
 
 
-@api_view(['GET'])
-def getVideoDetails(request, id):
-    if request.method == 'GET':
-        video = VideoModel.objects.get(pk=id)
-        chunks = video.rel.all()
-        serializeChunk = ChunkSerializer(chunks, many=True)
-        message = {
-            "message" : "success",
-            "downloadUrl": f"/api/download/{id}",
-            "chunks" : serializeChunk.data,
-        }
+# @api_view(['GET'])
+# def getVideoDetails(request, id):
+#     if request.method == 'GET':
+#         video = VideoModel.objects.get(pk=id)
+#         chunks = video.rel.all()
+#         serializeChunk = ChunkSerializer(chunks, many=True)
+#         message = {
+#             "message" : "success",
+#             "downloadUrl": f"/api/download/{id}",
+#             "chunks" : serializeChunk.data,
+#         }
+#
+#         return Response(message,status=status.HTTP_200_OK)
 
-        return Response(message,status=status.HTTP_200_OK)
-
-@api_view(['GET'])
-def getListOfPreviouslyProcessedVideos(request):
-  if request.method == 'GET':
-        videos = VideoModel.objects.all()
-        srts = SrtModel.objects.all()
-        serializeVideo = misc.serializeObject(VideoFileSerializer,videos,many=True)
-        serializeSrt =   misc.serializeObject(SrtFileSerializer,srts,many=True)
-        message = {
-            # "operationId" : serializeVideo.data['id'],
-            "video" : serializeVideo.data,
-            "srt" : serializeSrt.data,
-        }
-
+# @api_view(['GET'])
+# def getListOfPreviouslyProcessedVideos(request):
+#   if request.method == 'GET':
+#         videos = VideoModel.objects.all()
+#         srts = SrtModel.objects.all()
+#         serializeVideo = misc.serializeObject(VideoFileSerializer,videos,many=True)
+#         serializeSrt =   misc.serializeObject(SrtFileSerializer,srts,many=True)
+#         message = {
+#             # "operationId" : serializeVideo.data['id'],
+#             "video" : serializeVideo.data,
+#             "srt" : serializeSrt.data,
+#         }
+#
 
 
 
