@@ -15,7 +15,7 @@ from django.conf import settings
 from django.core.files import File
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from .models import VideoModel ,SrtModel ,Chunk,FusedResult,AudioModel
+from api.models import VideoModel ,SrtModel ,Chunk,FusedResult,AudioModel
 
 class TestViews(APITestCase):
 
