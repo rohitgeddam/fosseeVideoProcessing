@@ -73,7 +73,7 @@ You need to change some settings to run the database
 * You can click on the download button to download the tutorial or *right-click* and select *save link as*.
 
 # Api
-###Api Endpoints:
+### Api Endpoints:
 * `api/upload/`
     **[POST]**
    <p>This endpoint is used to upload files to the server.It only accepts (.mp4) and (.srt) files
@@ -131,26 +131,26 @@ You need to change some settings to run the database
     name_of_file
     download
   
-###API Testing:
-* Test the api run the following command
-* navigate to `fosseeVideoProcessing/videoProcessingAPI/` and run command `python manage.py test` in the terminal.
+### API Testing:
+### To test the api run the following command.
+*   navigate to `fosseeVideoProcessing/videoProcessingAPI/` and run command `python manage.py test` in the terminal.
 
 
 # VideoProcessing module
 * This is a local module which contains classes and methods usefull for videoprocessing
 * location of module `fosseeVideoProcessing/videoProcessingAPI/api/videoProcessing`
 
-####Classes:
+#### Classes:
 * SRT
 * VideoClip
-####Methods in SRT class:
+#### Methods in SRT class:
 * numberOfChunksInSrt
 * extractSrtData
 
-####Methods in VideoClip class:
+#### Methods in VideoClip class:
 * extractAudioFromVideoAndSave
 * removeAudioFromVideoAndSave
-####Methods:
+#### Methods:
 * mergeVideoAndAudioToGetDownloadFile
 * mergeAudiosForDownload
 * mergeVideoForDownload
@@ -165,7 +165,7 @@ You need to change some settings to run the database
 
 * location of module `fosseeVideoProcessing/videoProcessingAPI/api/miscFunctions`
 
-####Functions in this module
+#### Functions in this module
 * checkExtensionOfFileFromRequestObject
 * handleUploadedFilesAndSave
 * serializeObject
