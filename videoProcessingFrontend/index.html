@@ -9,17 +9,11 @@
 <script src="scripts/controllers/appController.js"></script> 
 <script src="scripts/services/fileUploadService.js"></script> 
 <script src="scripts/directives/fileUploadDirective.js"></script>
-
+<script src="scripts/controllers/settings.js"></script>
 <script src="scripts/controllers/fileUplaodController.js"></script>
 <script src="scripts/directives/fileUploadDirective.js"></script>
 <script src="scripts/services/fileUploadService.js"></script>
-<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<script
-  src="https://code.jquery.com/jquery-3.4.1.min.js"
-  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-  crossorigin="anonymous">
-</script> -->
-  
+
 </head>
 
 
@@ -119,14 +113,10 @@
       <td><a href="{{ chunk.videoChunkLocalPath }}" target="_blank">{{ chunk.videoChunkName }}</a></td>
       <td>{{ chunk.subtitleChunk }}</td>
       <td><a href="{{ chunk.audioChunkLocalPath }}" target="_blank">{{ chunk.audioChunkName }}</a></td>
-     <!-- <input type="file" id="reupload" name="reupload"  style="visibility: hidden; width: 1px; height: 1px"/> -->
-      <!-- <a href="" onclick="document.getElementById('upload').click(); return false">Upload</a> -->
-       <!-- <td><a href="" ng-click="openFileDialog(chunk.id)" >re-upload</a></td> -->
+
       <td>
-        <!-- <div>
-        <input type="file" id="reupload" name="reupload" />
-        </div> -->
-        <div ng-controller="myCtrl" class="btn btn-danger" >
+
+        <div ng-controller="uploadCtrl" class="btn btn-danger" >
           
           <input type="file" file-model="myFile" />
           <button ng-click="uploadFile(chunk.id)" class="btn btn-warning">upload</button>
@@ -157,10 +147,7 @@
     
     
   </div>
- 
 
-    
- 
 
 </div>
 
