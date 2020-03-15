@@ -54,3 +54,18 @@ You need to change some settings to run the database
 * Click the **Upload Files**  button to upload your files to the server.
 * After the File Upload is successfull **Process Video** button appears click on that button to process the video.
 ![homepage_files_selected](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/files_selected.png)
+
+* After the processing is done. The details are listed.
+![homepage_processing](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/list_details.png)
+
+* If you want to re-upload modified audio for a particular video chunk. Under **AUDIO RE-UPLOAD** column select the audio file and click **upload** button
+![homepage_reuplaod_audio](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/details_with_reupload.png)
+
+* Click on the **COMPILE** button at the bottom of the page.
+![homepage_compile](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/compile.png)
+
+* When you click on the **COMPILE** button a **DOWNLOAD TUTORIAL** button is available to download the tutorial.
+![homepage_download](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/download_tutorial.png)
+
+* You can click on the download button to download the tutorial or *right-click* and select *save link as*.
+
