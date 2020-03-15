@@ -28,10 +28,12 @@ You need to install few things before you can run the project.
 * [Python 3.x](https://www.python.org/downloads/)
 * [FFmpeg](https://www.ffmpeg.org/download.html)
 * [MySQL](https://www.mysql.com/downloads/)
+* [MySQL Workbench](https://dev.mysql.com/downloads/workbench/)
 
 After you have installed the above you can continue
 * Move into the downloaded directory `cd fosseeVideoProcessing/videoProcessingAPI/`
 * Install required python packages by typing `pip install -r requirments.txt` into the terminal
+* NOTE-> installation of mysqlclient in  windows systemss requires Microsoft Visual C++ 14.0. so install that first.
 
 You need to change some settings to run the database
 * Create a new database in MySQL with any name you like `e.g. fossee-task-1`
@@ -183,7 +185,7 @@ You need to change some settings to run the database
 * pydub (License: MIT License (MIT))
 * Django (License: BSD License (BSD))
 
-# Some websites to donwload videos and srt files
+# Some websites to download videos and srt files
 * [youtube](https://www.youtube.com/)
 * [downsub](https://downsub.com/)
 * [savesubs](https://savesubs.com/)
