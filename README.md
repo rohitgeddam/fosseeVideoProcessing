@@ -48,4 +48,4 @@ You need to change some settings to run the database
 * Make sure the Django server and MySQL database is up and running. if not follow the **installation** section properly.
 * Now navigate to `fosseeVideoProcessing/videoProcessingFrontend/`
 * open `index.html` in a browser (you need to have internet connection as it need to download some scripts from cdn)
-![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)
+![homepage_no_files](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/home_page.png)
