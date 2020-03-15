@@ -38,6 +38,7 @@ After you have installed the above you can continue
 
 You need to change some settings to run the database
 * Create a new schema in MySQL with any name you like `e.g. fossee-task-1`
+* Open MySQL Workbench
 ![new_schema](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/new_schema.gif)
 
 
