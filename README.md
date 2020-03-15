@@ -35,7 +35,7 @@ After you have installed the above you can continue
 * Install virtualenv by typing `sudo pip3 install virtualenv `in terminal.
 * It is recommended to create a virtual environment to install all python packages.
 * To create a virtual environment type `virtualenv -p python3 venv ` in terminal
-* To activate your virtual environment typr `source venv/bin/activate`
+* To activate your virtual environment type `source venv/bin/activate`
 * Move into the downloaded directory `cd fosseeVideoProcessing/videoProcessingAPI/`
 * Install required python packages by typing `pip install -r requirments.txt` into the terminal
 * NOTE-> installation of mysqlclient in  windows systemss requires Microsoft Visual C++ 14.0. so install that first.
