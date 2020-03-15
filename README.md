@@ -37,7 +37,10 @@ After you have installed the above you can continue
 * NOTE-> installation of mysqlclient in  windows systemss requires Microsoft Visual C++ 14.0. so install that first.
 
 You need to change some settings to run the database
-* Create a new database in MySQL with any name you like `e.g. fossee-task-1`
+* Create a new schema in MySQL with any name you like `e.g. fossee-task-1`
+![new_schema](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/new_schema.gih)
+
+
 * navigate to `fosseeVideoProcessing/videoProcessingAPI/` and open `settings.py` file.
 * make the following changes to the `settings.py` file
     1. Change DB_NAME to the name of the database you created (around line number 80)
