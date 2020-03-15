@@ -11,7 +11,8 @@ one a single video(.mp4) file when the use clicks on the compile button at the b
 * [Installation](#Installation)
 * [Usage](#Usage)
 * [API](#Api)
-
+* [videoProcessing module](#VideoProcessing module)
+* [miscFunctions module](#MiscFunctions module)
 * [Credits](#Credits)
 
 
@@ -29,12 +30,12 @@ You need to install few things before you can run the project.
 * [MySQL](https://www.mysql.com/downloads/)
 
 After you have installed the above you can continue
-* Move into the downloaded directory `cd fosseeVideoProcessing/videoProcessingAP/`
+* Move into the downloaded directory `cd fosseeVideoProcessing/videoProcessingAPI/`
 * Install required python packages by typing `pip install -r requirments.txt` into the terminal
 
 You need to change some settings to run the database
 * Create a new database in MySQL with any name you like `e.g. fossee-task-1`
-* navigate to `fosseeVideoProcessing/videoProcessingAPI/videoProcessingApp` and open `settings.py` file.
+* navigate to `fosseeVideoProcessing/videoProcessingAPI/` and open `settings.py` file.
 * make the following changes to the `settings.py` file
     1. Change DB_NAME to the name of the database you created (around line number 80)
     2. Change DB_PASSWORD to your database password
@@ -103,7 +104,7 @@ You need to change some settings to run the database
 **[GET]** 
     <p>This endpoint fetches the details of processed video.The (id) parameter is required which is the operation_id of the processed video.</p>
     <p>We can also get the details of previously processed video by specifying the operation_id of that video in parameter.</p>
-**returns:**
+**returns: JSON**
    
     message
     downloadUrl
@@ -113,7 +114,7 @@ You need to change some settings to run the database
 * `api/reupload/<int:chunk_id>` 
 **[POST]**
  <p>This endpoint is used to reupload the audio file (.mp3).The file is uploaded using form field with the name 'file'. chunk_id is required as parameter.</p>
-   <p>This route is redirected to the getdetails route which returns</p>
+   <p>This route is redirected to the getdetails route which returns  JSON</p>
     
     message
     downloadUrl
@@ -131,8 +132,46 @@ You need to change some settings to run the database
     download
   
 ###API Testing:
-####To test the api run the following command.
+###To test the api run the following command.
 *   navigate to `fosseeVideoProcessing/videoProcessingAPI/` and run command `python manage.py test` in the terminal.
+
+
+# VideoProcessing module
+#####This is a local module which contains classes and methods usefull for videoprocessing
+#####location of module `fosseeVideoProcessing/videoProcessingAPI/api/videoProcessing`
+
+####Classes:
+* SRT
+* VideoClip
+####Methods in SRT class:
+* numberOfChunksInSrt
+* extractSrtData
+
+####Methods in VideoClip class:
+* extractAudioFromVideoAndSave
+* removeAudioFromVideoAndSave
+####Methods:
+* mergeVideoAndAudioToGetDownloadFile
+* mergeAudiosForDownload
+* mergeVideoForDownload
+* trimAudioClipAndSave
+* getVideoLengthInSeconds
+* convertTimeToSeconds
+
+
+# MiscFunctions module
+#####This is a local module which contains utility or helper functions
+#####location of module `fosseeVideoProcessing/videoProcessingAPI/api/miscFunctions`
+
+####Functions in this module
+* checkExtensionOfFileFromRequestObject
+* handleUploadedFilesAndSave
+* serializeObject
+* removeAndCreateDirectoryInSamePath
+* createDirectoryIfNotExists
+* splitAudioAndVideoIntoChunk
+* writePathsToTxtFileToUseWithFFMPEG
+
 # Credits
 * FFmpeg (License: GNU General Public License (GPL) (GPLv2))
 * pysrt (License: GNU General Public License (GPL) (GPLv3))
