@@ -38,7 +38,7 @@ After you have installed the above you can continue
 
 You need to change some settings to run the database
 * Create a new schema in MySQL with any name you like `e.g. fossee-task-1`
-![new_schema](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/new_schema.gih)
+![new_schema](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/new_schema.gif)
 
 
 * navigate to `fosseeVideoProcessing/videoProcessingAPI/` and open `settings.py` file.
