@@ -57,7 +57,7 @@ You need to change some settings to run the database
 * Before you start the server make sure the MySQL server is running at port `3306` or the port that you decided while creating the database.
 * You can now run the project by navigating to `fosseeVideoProcessing/videoProcessingAPI/` and typing `python manage.py runserver`
 * **NOTE** If you want to run the django server on some other port than `8000`. then you need to change the `LOCAL_HOST_URL_WITH_PORT` constant in the settings.js file of the frontend application  at location `/fosseeVideoProcessing/videoProcessingFrontend/scripts/controllers/settings.js`
-* If everything goes well the server will be up and running.
+* If everything goes well the server will be up and running
 
 # Usage:
 * Make sure the Django server and MySQL database is up and running. if not follow the **installation** section properly.
