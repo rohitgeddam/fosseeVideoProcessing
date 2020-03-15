@@ -11,8 +11,8 @@ one a single video(.mp4) file when the use clicks on the compile button at the b
 * [Installation](#Installation)
 * [Usage](#Usage)
 * [API](#Api)
-* [videoProcessing module](#VideoProcessingmodule)
-* [miscFunctions module](#MiscFunctionsmodule)
+* [videoProcessing module](#VideoProcessing_module)
+* [miscFunctions module](#MiscFunctions_module)
 * [Credits](#Credits)
 
 
@@ -136,7 +136,7 @@ You need to change some settings to run the database
 *   navigate to `fosseeVideoProcessing/videoProcessingAPI/` and run command `python manage.py test` in the terminal.
 
 
-# VideoProcessing module
+# VideoProcessing_module
 * This is a local module which contains classes and methods usefull for videoprocessing
 * location of module `fosseeVideoProcessing/videoProcessingAPI/api/videoProcessing`
 
@@ -159,7 +159,7 @@ You need to change some settings to run the database
 * convertTimeToSeconds
 
 
-# MiscFunctions module
+# MiscFunctions_module
 
 * This is a local module which contains utility or helper functions
 
