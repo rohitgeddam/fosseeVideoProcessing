@@ -160,7 +160,9 @@ You need to change some settings to run the database
 
 
 # MiscFunctions module
+
 #####This is a local module which contains utility or helper functions
+
 #####location of module `fosseeVideoProcessing/videoProcessingAPI/api/miscFunctions`
 
 ####Functions in this module
