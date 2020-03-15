@@ -10,18 +10,14 @@ from django.shortcuts import  redirect
 from django.conf import settings
 
 # python core modules
-
 import time
-
 import datetime
-
-
 
 #imports for video manipulation
 from api.videoProcessing import videoProcessingUtils
 from api.miscFunctions import misc
 
-import pysrt
+
 from pydub import AudioSegment
 from moviepy.editor import *
 

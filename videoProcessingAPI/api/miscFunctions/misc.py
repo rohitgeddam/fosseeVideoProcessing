@@ -1,28 +1,15 @@
 
 #django imports
 from rest_framework import status
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from api.models import VideoModel ,SrtModel ,Chunk,FusedResult,AudioModel
 from api.serializers import VideoFileSerializer,SrtFileSerializer,ChunkSerializer
-from django.shortcuts import  redirect
 from django.conf import settings
-
 # python core modules
-import os
 import shutil
-import time
-import subprocess
-import datetime
-
-
-
 #imports for video manipulation
 from api.videoProcessing import videoProcessingUtils
 from api.miscFunctions import misc
-
-import pysrt
-from pydub import AudioSegment
 from moviepy.editor import *
 
 def checkExtensionOfFileFromRequestObject(requestObject,nameOfField,extension):

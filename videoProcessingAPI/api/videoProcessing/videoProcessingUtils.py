@@ -1,6 +1,6 @@
 from django.conf import settings
 from moviepy.editor import *
-from pydub import AudioSegment
+
 import subprocess
 import pysrt
 import os

@@ -5,14 +5,14 @@ from rest_framework import status
 import os
 
 from rest_framework.test import APITestCase
-from rest_framework.test import APIClient,RequestsClient
-from django.core import serializers
+from rest_framework.test import APIClient
+
 from django.urls import reverse
-from django.core.exceptions import ObjectDoesNotExist
+
 from django.conf import settings
 
 
-from django.core.files import File
+
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from api.models import VideoModel ,SrtModel ,Chunk,FusedResult,AudioModel

@@ -183,3 +183,7 @@ You need to change some settings to run the database
 * pydub (License: MIT License (MIT))
 * Django (License: BSD License (BSD))
 
+# Some websites to donwload videos and srt files
+* [youtube](https://www.youtube.com/)
+* [sownsub](https://downsub.com/)
+* [savesubs](https://savesubs.com/)
