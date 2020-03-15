@@ -48,4 +48,9 @@ You need to change some settings to run the database
 * Make sure the Django server and MySQL database is up and running. if not follow the **installation** section properly.
 * Now navigate to `fosseeVideoProcessing/videoProcessingFrontend/`
 * open `index.html` in a browser (you need to have internet connection as it need to download some scripts from cdn)
+* Screenshot below
 ![homepage_no_files](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/home_page.png)
+* Select any video file (.mp4) and srt file (.srt) from your drive or you can use the ones in the `/fosseeVideoProcessing/videoProcessingAPI/test_files/` (**do not delete any files in test_files directory**)
+* Click the **Upload Files**  button to upload your files to the server.
+* After the File Upload is successfull **Process Video** button appears click on that button to process the video.
+![homepage_files_selected](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/files_selected.png)
