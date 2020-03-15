@@ -11,8 +11,8 @@ one a single video(.mp4) file when the use clicks on the compile button at the b
 * [Installation](#Installation)
 * [Usage](#Usage)
 * [API](#Api)
-* [videoProcessing module](#VideoProcessing module)
-* [miscFunctions module](#MiscFunctions module)
+* [videoProcessing module](#VideoProcessingmodule)
+* [miscFunctions module](#MiscFunctionsmodule)
 * [Credits](#Credits)
 
 
