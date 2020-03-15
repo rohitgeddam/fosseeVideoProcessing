@@ -15,7 +15,7 @@ one a single video(.mp4) file when the use clicks on the compile button at the b
 * [miscFunctions module](#MiscFunctions_module)
 * [Credits](#Credits)
 
-
+### [Watch the video](https://www.youtube.com/watch?v=rYZIsh0laKI)
 # Installation:
 * **It is recommended to use Linux/Unix based systems. windows based system can be used but the mysqlclient python package causes problems in windows.**
 * You can either clone the project or download as zip
