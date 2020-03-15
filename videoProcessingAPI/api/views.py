@@ -107,15 +107,20 @@ def splitVideo(request, id):
                 chunkEndTime = datetime.time(chunk.end.hours,chunk.end.minutes,chunk.end.seconds)
 
 
+                audioChunkLocalPath = settings.MEDIA_ROOT + f'audioSplit/{id}/{i}.mp3'
+                videoChunkLocalPath = settings.MEDIA_ROOT + f'videoSplit/{id}/{i}.mp4'
+
                 audioChunkUrlPath = settings.MEDIA_URL + f'audioSplit/{id}/{i}.mp3'
                 videoChunkUrlPath = settings.MEDIA_URL + f'videoSplit/{id}/{i}.mp4'
 
                 detailsAboutChunk = Chunk(
                     operationId= videoFile,
                     me = i,
-                    videoChunkPath=videoChunkUrlPath,
+                    videoChunkLocalPath= videoChunkLocalPath,
+                    videoChunkPath =videoChunkUrlPath,
+                    audioChunkPath =audioChunkUrlPath,
                     videoChunkName=f'{i}.mp4',
-                    audioChunkPath=audioChunkUrlPath,
+                    audioChunkLocalPath= audioChunkLocalPath,
                     audioChunkName=f'{i}.mp3',
                     subtitleChunk = chunk.text,
                     startTime= chunkStartTime,

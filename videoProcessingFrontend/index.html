@@ -116,9 +116,9 @@
       <td>{{ chunk.me }}</td>
       <td>{{ chunk.startTime }}</td>
       <td>{{ chunk.endTime }}</td>
-      <td>{{ chunk.videoChunkName }}</td>
+      <td><a href="{{ chunk.videoChunkLocalPath }}" target="_blank">{{ chunk.videoChunkName }}</a></td>
       <td>{{ chunk.subtitleChunk }}</td>
-      <td>{{ chunk.audioChunkName }}</td>
+      <td><a href="{{ chunk.audioChunkLocalPath }}" target="_blank">{{ chunk.audioChunkName }}</a></td>
      <!-- <input type="file" id="reupload" name="reupload"  style="visibility: hidden; width: 1px; height: 1px"/> -->
       <!-- <a href="" onclick="document.getElementById('upload').click(); return false">Upload</a> -->
        <!-- <td><a href="" ng-click="openFileDialog(chunk.id)" >re-upload</a></td> -->

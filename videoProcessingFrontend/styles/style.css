@@ -9,9 +9,10 @@
     margin : 20px;
 }
 
-.reupload-file-message{
-    color:black;
+td {
+    text-align:center;
 }
+
 
 .error-message{
     margin:30px;
@@ -27,6 +28,7 @@
   height:auto;
   width:auto;
   background-color: #d6cece;
+
 }
 
 .btn-controls-bottom{
@@ -40,6 +42,7 @@
 }
 
   table, th , td  {
+
     border: 1px solid grey;
     border-collapse: collapse;
     padding: 5px;

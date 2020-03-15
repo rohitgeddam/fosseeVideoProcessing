@@ -32,6 +32,8 @@ class Chunk(models.Model):
     me = models.IntegerField(default=0)
     videoChunkPath = models.CharField(max_length=200,blank=False,null=False,default="~/")
     videoChunkName = models.CharField(max_length=100,blank=False,default="1.mp4")
+    videoChunkLocalPath = models.CharField(max_length=100,blank=False,default="1.mp4")
+    audioChunkLocalPath = models.CharField(max_length=100,blank=False,default="1.mp3")
     audioChunkPath = models.CharField(max_length=200,blank=False,null=False,default="~/")
     audioChunkName = models.CharField(max_length=200,blank=False,null=False,default="1.mp3")
     subtitleChunk = models.CharField(max_length=500,blank=True,null=False,default=" ")
