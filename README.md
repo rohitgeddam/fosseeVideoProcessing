@@ -132,13 +132,13 @@ You need to change some settings to run the database
     download
   
 ###API Testing:
-###To test the api run the following command.
-*   navigate to `fosseeVideoProcessing/videoProcessingAPI/` and run command `python manage.py test` in the terminal.
+* Test the api run the following command
+* navigate to `fosseeVideoProcessing/videoProcessingAPI/` and run command `python manage.py test` in the terminal.
 
 
 # VideoProcessing module
-#####This is a local module which contains classes and methods usefull for videoprocessing
-#####location of module `fosseeVideoProcessing/videoProcessingAPI/api/videoProcessing`
+* This is a local module which contains classes and methods usefull for videoprocessing
+* location of module `fosseeVideoProcessing/videoProcessingAPI/api/videoProcessing`
 
 ####Classes:
 * SRT
@@ -161,9 +161,9 @@ You need to change some settings to run the database
 
 # MiscFunctions module
 
-#####This is a local module which contains utility or helper functions
+* This is a local module which contains utility or helper functions
 
-#####location of module `fosseeVideoProcessing/videoProcessingAPI/api/miscFunctions`
+* location of module `fosseeVideoProcessing/videoProcessingAPI/api/miscFunctions`
 
 ####Functions in this module
 * checkExtensionOfFileFromRequestObject
