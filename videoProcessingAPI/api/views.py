@@ -54,19 +54,6 @@ def getVideoDetails(request, id):
 
         return Response(message,status=status.HTTP_200_OK)
 
-# @api_view(['GET'])
-# def getListOfPreviouslyProcessedVideos(request):
-#   if request.method == 'GET':
-#         videos = VideoModel.objects.all()
-#         srts = SrtModel.objects.all()
-#         serializeVideo = misc.serializeObject(VideoFileSerializer,videos,many=True)
-#         serializeSrt =   misc.serializeObject(SrtFileSerializer,srts,many=True)
-#         message = {
-#             # "operationId" : serializeVideo.data['id'],
-#             "video" : serializeVideo.data,
-#             "srt" : serializeSrt.data,
-#         }
-#
 
 
 

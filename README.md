@@ -6,12 +6,14 @@ web app displays the start time, end time, video chunk sequence number,subtitles
 For each audio the use can reupload the edited .mp3 file for that video chunk.The app combines all the audio and video chunks into
 one a single video(.mp4) file when the use clicks on the compile button at the bottom of the page and provides a download link.
 
-##Table of Content:
+## Table of Content:
 
 * [Installation](#Installation)
 * [Usage](#Usage)
+* [API](#Api)
+
 * [Credits](#Credits)
-* [License](#License)
+
 
 # Installation:
 * You can either clone the project or download as zip
@@ -38,7 +40,7 @@ You need to change some settings to run the database
     2. Change DB_PASSWORD to your database password
     3. likewise change DB_HOST and DB_PORT 
 * If you dont want to make the above changes you should create the database with the name `fossee-task-1` and everything will work without any changes in `settings.py` file.
-
+* Navigating to `fosseeVideoProcessing/videoProcessingAPI/` and run command `python manage.py migrate` in terminal.
 * Before running the project you can run the tests by  navigating to `fosseeVideoProcessing/videoProcessingAPI/` and typing `python manage.py test`
 * Before you start the server make sure the MySQL server is running at port `3306` or the port that you decided while creating the database.
 * You can now run the project by navigating to `fosseeVideoProcessing/videoProcessingAPI/` and typing `python manage.py runserver`
@@ -68,4 +70,75 @@ You need to change some settings to run the database
 ![homepage_download](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/download_tutorial.png)
 
 * You can click on the download button to download the tutorial or *right-click* and select *save link as*.
+
+# Api
+###Api Endpoints:
+* `api/upload/`
+    **[POST]**
+   <p>This endpoint is used to upload files to the server.It only accepts (.mp4) and (.srt) files
+   the uploaded files are stored temporarily before its processed in the media directory.
+   It requires 2 files one is video file (.mp4) and the other is (.srt) file.Pass these using form data with the name
+   'video' and 'srt' respectively.
+   </p>
+**returns: JSON**
+   
+    operationId
+    message
+    operation_url
+   
+  
+* `api/process/<int:id>`
+    **[GET]** 
+    <p>This endpoint is used to process the uploaded video.Requires (id) paramater which is the operation_id of the video</p>
+    
+**returns: JSON**
+
+    message
+    time(sec)
+    path
+    downloadUrl
+    chunks
+    
+* `api/getdetails/<int:id>` 
+**[GET]** 
+    <p>This endpoint fetches the details of processed video.The (id) parameter is required which is the operation_id of the processed video.</p>
+    <p>We can also get the details of previously processed video by specifying the operation_id of that video in parameter.</p>
+**returns:**
+   
+    message
+    downloadUrl
+    chunks
+   
+        
+* `api/reupload/<int:chunk_id>` 
+**[POST]**
+ <p>This endpoint is used to reupload the audio file (.mp3).The file is uploaded using form field with the name 'file'. chunk_id is required as parameter.</p>
+   <p>This route is redirected to the getdetails route which returns</p>
+    
+    message
+    downloadUrl
+    chunks
+   
+
+   
+* `api/download/<int:operationId>`
+**[GET]** 
+    <p>This endpoint compiles all the video and audio chunk into one file and provide a download link. requires operation_id of the video as parameter </p>
+**returns:**
+   
+    message
+    name_of_file
+    download
+  
+###API Testing:
+####To test the api run the following command.
+*   navigate to `fosseeVideoProcessing/videoProcessingAPI/` and run command `python manage.py test` in the terminal.
+# Credits
+* FFmpeg (License: GNU General Public License (GPL) (GPLv2))
+* pysrt (License: GNU General Public License (GPL) (GPLv3))
+* mysqlclient (License: GNU General Public License (GPL))
+* django-rest-framework (License: BSD License (BSD))
+* moviepy (License: MIT License (MIT License))
+* pydub (License: MIT License (MIT))
+* Django (License: BSD License (BSD))
 
