@@ -13,6 +13,7 @@ one a single video(.mp4) file when the use clicks on the compile button at the b
 * [API](#Api)
 * [videoProcessing module](#VideoProcessing_module)
 * [miscFunctions module](#MiscFunctions_module)
+* [Database](#Database)
 * [Credits](#Credits)
 
 ### [Watch the video](https://www.youtube.com/watch?v=rYZIsh0laKI)
@@ -43,6 +44,8 @@ After you have installed the above you can continue
 You need to change some settings to run the database
 * Create a new schema in MySQL with any name you like `e.g. fossee-task-1`
 * Open MySQL Workbench
+<br>
+
 ![new_schema](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/new_schema.gif)
 
 
@@ -60,26 +63,43 @@ You need to change some settings to run the database
 * If everything goes well the server will be up and running
 
 # Usage:
+* **NOTE** This app seperates Backend from the Frontend
+* **LOCATION OF FRONTEND APP** `fosseeVideoProcessing/videoProcessingFrontend/`
+*  **LOCATION OF BACKEND APP** `fosseeVideoProcessing/videoProcessingAPI/`
 * Make sure the Django server and MySQL database is up and running. if not follow the **installation** section properly.
 * Now navigate to `fosseeVideoProcessing/videoProcessingFrontend/`
 * open `index.html` in a browser (you need to have internet connection as it need to download some scripts from cdn)
 * Screenshot below
+<br>
+
 ![homepage_no_files](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/home_page.png)
 * Select any video file (.mp4) and srt file (.srt) from your drive or you can use the ones in the `/fosseeVideoProcessing/videoProcessingAPI/test_files/` (**do not delete any files in test_files directory**)
 * Click the **Upload Files**  button to upload your files to the server.
 * After the File Upload is successfull **Process Video** button appears click on that button to process the video.
+<br>
+
 ![homepage_files_selected](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/files_selected.png)
 
 * After the processing is done. The details are listed.
+<br>
+
 ![homepage_processing](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/list_details.png)
 
 * If you want to re-upload modified audio for a particular video chunk. Under **AUDIO RE-UPLOAD** column select the audio file and click **upload** button
+<br>
+
 ![homepage_reuplaod_audio](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/details_with_reupload.png)
 
 * Click on the **COMPILE** button at the bottom of the page.
+<br>
+
 ![homepage_compile](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/compile.png)
 
+
+
 * When you click on the **COMPILE** button a **DOWNLOAD TUTORIAL** button is available to download the tutorial.
+<br>
+
 ![homepage_download](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/download_tutorial.png)
 
 * You can click on the download button to download the tutorial or *right-click* and select *save link as*.
@@ -185,6 +205,15 @@ You need to change some settings to run the database
 * createDirectoryIfNotExists
 * splitAudioAndVideoIntoChunk
 * writePathsToTxtFileToUseWithFFMPEG
+
+# Database
+The database used is MySQL server with MySql workbench.To interact with database within django app djangoORM is used.
+
+### Database Schema
+<br>
+
+![db_schema](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/db_schema.png)
+
 
 # Credits
 * FFmpeg (License: GNU General Public License (GPL) (GPLv2))
