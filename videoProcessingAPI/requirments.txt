@@ -4,4 +4,3 @@ pydub
 django
 djangorestframework
 django-cors-headers
-mysqlclient

@@ -1,27 +1,31 @@
 import os
 from decouple import config
 
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 SECRET_KEY = config("SECRET_KEY")
 
-
 # Application definition
-
-INSTALLED_APPS = [
+DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+]
+
+THIRD_PARY_APPS = [
     "corsheaders",
     "rest_framework",
+]
+
+USER_APPS = [
     "api",
 ]
+
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARY_APPS + USER_APPS
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -53,10 +57,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "videoProcessingApp.wsgi.application"
-
-
-# Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
     "default": {
@@ -98,17 +98,10 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
-
 STATIC_URL = "/static/"
 
 MEDIA_URL = "/media/"
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
+MEDIA_ROOT = os.path.join(BASE_DIR, "../media/")
 
 CORS_ORIGIN_ALLOW_ALL = True
-
-
-# IS_UNDER_TEST_ENVIRONMENT = False
