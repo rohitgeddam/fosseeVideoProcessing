@@ -58,21 +58,26 @@ def split_video(request, id):
         videoInstance = videoProcessingUtils.VideoClip(videoFile.path)
 
         pathToOnlyAudioDir, pathToOnlyVideoDir = create_audio_video_dirs()
-        onlyAudioPath, onlyVideoPath = extract_video_audio_seperately_save(
-            videoInstance, pathToOnlyAudioDir, pathToOnlyVideoDir
-        )
         # VideoFileClip from moviepy.editor
+        print("2NPATH", pathToOnlyAudioDir, pathToOnlyVideoDir)
+        onlyAudioPath, onlyVideoPath = extract_video_audio_seperately_save(
+            id, videoInstance, pathToOnlyAudioDir, pathToOnlyVideoDir
+        )
         videoToBeSplittedIntoChunks = VideoFileClip(onlyVideoPath)
         audioToBeSplittedIntoChunks = AudioSegment.from_mp3(onlyAudioPath)
 
-        create_dirs_for_splits()
+        create_dirs_for_splits(id)
 
         srtFile = SrtModel.objects.get(id=id)
         srtInstance = videoProcessingUtils.SRT(srtFile.path)
         srtData = srtInstance.extractSrtData()
-
+        print("SRT DATA", srtData[0])
         split_by_chunk(
-            srtData, videoToBeSplittedIntoChunks, audioToBeSplittedIntoChunks, videoFile
+            id,
+            srtData,
+            videoToBeSplittedIntoChunks,
+            audioToBeSplittedIntoChunks,
+            videoFile,
         )
         # fetching data from db.
         videoInstance = VideoModel.objects.get(pk=id)
@@ -226,16 +231,21 @@ def create_audio_video_dirs():
     pathToOnlyVideoDir = misc.createDirectoryIfNotExists(
         settings.MEDIA_ROOT, "videoWithoutAudio"
     )
+
     return (pathToOnlyAudioDir, pathToOnlyVideoDir)
 
 
-def extract_video_audio_seperately_save(video, pathToOnlyAudioDir, pathToOnlyVideoDir):
+def extract_video_audio_seperately_save(
+    id, video, pathToOnlyAudioDir, pathToOnlyVideoDir
+):
+
     onlyVideoPath = video.removeAudioFromVideoAndSave(pathToOnlyVideoDir, f"{id}.mp4")
     onlyAudioPath = video.extractAudioFromVideoAndSave(pathToOnlyAudioDir, f"{id}.mp3")
+    # print("AUDviD", onlyAudioPath, onlyVideoPath)
     return (onlyAudioPath, onlyVideoPath)
 
 
-def create_dirs_for_splits():
+def create_dirs_for_splits(id):
     pathToStoreChunksOfSplitedVideo = settings.MEDIA_ROOT + f"videoSplit/{id}"
     pathToStoreChunksOfSplitedAudio = settings.MEDIA_ROOT + f"audioSplit/{id}"
 
@@ -243,18 +253,21 @@ def create_dirs_for_splits():
     misc.createDirectoryIfNotExists(pathToStoreChunksOfSplitedAudio)
 
 
-def split_by_chunk(srtData, video, audio, videoFile):
-
+def split_by_chunk(id, srtData, video, audio, videoFile):
+    print("CHUNKING STARTED")
     i = 1
     for chunk in srtData:
         try:
-
+            print("CHUNK DT", chunk)
             videoPart, audioPart = misc.splitAudioAndVideoIntoChunk(video, audio, chunk)
-
+            print("CHUCK DONE")
             videoChunkPath = settings.MEDIA_ROOT + f"videoSplit/{id}/{i}.mp4"
             audioChunkPath = settings.MEDIA_ROOT + f"audioSplit/{id}/{i}.mp3"
             # saving video cunk
-            videoPart.write_videofile(videoChunkPath)
+            try:
+                videoPart.write_videofile(videoChunkPath)
+            except TypeError:
+                print("Error occured while writing video file to directory")
             # saving audio chunk
             audioPart.export(audioChunkPath, format="mp3")
 
@@ -285,6 +298,7 @@ def split_by_chunk(srtData, video, audio, videoFile):
             i = i + 1
 
         except ValueError:
+            raise ValueError("ERROR OCCURED WHILE SPLITTING BY CHUNKS")
             break
 
 

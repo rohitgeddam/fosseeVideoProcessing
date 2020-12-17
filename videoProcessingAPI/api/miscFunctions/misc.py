@@ -83,6 +83,7 @@ def createDirectoryIfNotExists(pathToDirectory, dirName=""):
 
 
 def splitAudioAndVideoIntoChunk(videoToSplit, audioToSplit, chunkData):
+    print("SPLIT", dir(videoToSplit), audioToSplit, "chunk dir ", dir(chunkData))
     splitedVideoChunk = videoToSplit.subclip(
         videoProcessingUtils.convertTimeToSeconds(
             chunkData.start.hours,
@@ -105,14 +106,13 @@ def splitAudioAndVideoIntoChunk(videoToSplit, audioToSplit, chunkData):
             chunkData.start.seconds,
             chunkData.start.milliseconds,
         )
-        * 1000,
-        videoProcessingUtils.convertTimeToSeconds(
+        * 1000 : videoProcessingUtils.convertTimeToSeconds(
             chunkData.end.hours,
             chunkData.end.minutes,
             chunkData.end.seconds,
             chunkData.end.milliseconds,
         )
-        * 1000,
+        * 1000
     ]
 
     return splitedVideoChunk, splitedAudioChunk
