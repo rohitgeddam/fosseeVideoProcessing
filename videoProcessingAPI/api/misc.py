@@ -1,5 +1,7 @@
 # python core modules
 import shutil
+import os
+import datetime
 
 # django imports
 from rest_framework import status
@@ -9,8 +11,8 @@ from api.serializers import VideoFileSerializer, SrtFileSerializer, ChunkSeriali
 from django.conf import settings
 
 # imports for video manipulation
-from api.videoProcessing import videoProcessingUtils
-from api.miscFunctions import misc
+from api import videoProcessingUtils
+from api import misc
 from moviepy.editor import *
 
 
@@ -70,7 +72,7 @@ def serializeObject(serializerClass, objectToSerialize, many=False):
 def removeAndCreateDirectoryInSamePath(dirPath, create=True):
     if os.path.exists(dirPath):
         shutil.rmtree(dirPath)
-    if create == True:
+    if create is True:
         os.mkdir(dirPath)
 
 
@@ -133,3 +135,111 @@ def writePathsToTxtFileToUseWithFFMPEG(chunks, audioFilePath, videoFilePath):
 
     audiFile.close()
     vidFile.close()
+
+
+def create_audio_video_dirs():
+    pathToOnlyAudioDir = misc.createDirectoryIfNotExists(
+        settings.MEDIA_ROOT, "onlyAudio"
+    )
+
+    pathToOnlyVideoDir = misc.createDirectoryIfNotExists(
+        settings.MEDIA_ROOT, "videoWithoutAudio"
+    )
+
+    return (pathToOnlyAudioDir, pathToOnlyVideoDir)
+
+
+def extract_video_audio_seperately_save(
+    id, video, pathToOnlyAudioDir, pathToOnlyVideoDir
+):
+
+    onlyVideoPath = video.removeAudioFromVideoAndSave(pathToOnlyVideoDir, f"{id}.mp4")
+    onlyAudioPath = video.extractAudioFromVideoAndSave(pathToOnlyAudioDir, f"{id}.mp3")
+    # print("AUDviD", onlyAudioPath, onlyVideoPath)
+    return (onlyAudioPath, onlyVideoPath)
+
+
+def create_dirs_for_splits(id):
+    pathToStoreChunksOfSplitedVideo = settings.MEDIA_ROOT + f"videoSplit/{id}"
+    pathToStoreChunksOfSplitedAudio = settings.MEDIA_ROOT + f"audioSplit/{id}"
+
+    misc.createDirectoryIfNotExists(pathToStoreChunksOfSplitedVideo)
+    misc.createDirectoryIfNotExists(pathToStoreChunksOfSplitedAudio)
+
+
+def split_by_chunk(id, srtData, video, audio, videoFile):
+    i = 1
+    for chunk in srtData:
+        try:
+            videoPart, audioPart = misc.splitAudioAndVideoIntoChunk(video, audio, chunk)
+            videoChunkPath = settings.MEDIA_ROOT + f"videoSplit/{id}/{i}.mp4"
+            audioChunkPath = settings.MEDIA_ROOT + f"audioSplit/{id}/{i}.mp3"
+            # saving video cunk
+            try:
+                videoPart.write_videofile(videoChunkPath)
+            except TypeError:
+                print("Error occured while writing video file to directory")
+            # saving audio chunk
+            audioPart.export(audioChunkPath, format="mp3")
+
+            chunkStartTime = datetime.time(
+                chunk.start.hours, chunk.start.minutes, chunk.start.seconds
+            )
+            chunkEndTime = datetime.time(
+                chunk.end.hours, chunk.end.minutes, chunk.end.seconds
+            )
+            audioChunkLocalPath, videoChunkLocalPath = get_local_paths_with_i(i)
+            audioChunkUrlPath, videoChunkUrlPath = get_url_paths_with_i(i)
+
+            detailsAboutChunk = Chunk(
+                operationId=videoFile,
+                me=i,
+                videoChunkLocalPath=videoChunkLocalPath,
+                videoChunkPath=videoChunkUrlPath,
+                audioChunkPath=audioChunkUrlPath,
+                videoChunkName=f"{i}.mp4",
+                audioChunkLocalPath=audioChunkLocalPath,
+                audioChunkName=f"{i}.mp3",
+                subtitleChunk=chunk.text,
+                startTime=chunkStartTime,
+                endTime=chunkEndTime,
+            )
+
+            detailsAboutChunk.save()
+            i = i + 1
+
+        except ValueError:
+            raise ValueError("ERROR OCCURED WHILE SPLITTING BY CHUNKS")
+            break
+
+
+def get_local_paths_with_i(i):
+
+    audioChunkLocalPath = settings.MEDIA_ROOT + f"audioSplit/{id}/{i}.mp3"
+    videoChunkLocalPath = settings.MEDIA_ROOT + f"videoSplit/{id}/{i}.mp4"
+    return (audioChunkLocalPath, videoChunkLocalPath)
+
+
+def get_url_paths_with_i(i):
+    audioChunkUrlPath = settings.MEDIA_URL + f"audioSplit/{id}/{i}.mp3"
+    videoChunkUrlPath = settings.MEDIA_URL + f"videoSplit/{id}/{i}.mp4"
+    return (audioChunkUrlPath, videoChunkUrlPath)
+
+
+def clean_up_dirs(*args):
+    # deleting original files to save space
+    for path in args:
+        if os.path.exists(path):
+            os.remove(path)
+
+
+def clean_up_files(*args):
+    for path in args:
+        while os.path.exits(path):
+            os.remove(path)
+
+
+def get_merged_destination_paths(operationId):
+    audio_path = settings.MEDIA_ROOT + f"audioSplit/{operationId}/mergedAUDIO.mp3"
+    video_path = settings.MEDIA_ROOT + f"videoSplit/{operationId}/mergedVIDEO.mp4"
+    return (audio_path, video_path)
