@@ -3,6 +3,7 @@ from django.urls import path
 from api import views
 
 urlpatterns = [
+    path("status/<str:task_id>", views.get_progress, name="task-status"),
     path("upload/", views.upload_files_to_server, name="file-upload"),
     # path('getdetails/', views.getListOfPreviouslyProcessedVideos),
     path("getdetails/<int:id>", views.get_video_details, name="get-details"),

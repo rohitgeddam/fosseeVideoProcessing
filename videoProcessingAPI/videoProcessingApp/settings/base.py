@@ -18,10 +18,7 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
 ]
 
-THIRD_PARY_APPS = [
-    "corsheaders",
-    "rest_framework",
-]
+THIRD_PARY_APPS = ["corsheaders", "rest_framework", "django_celery_results"]
 
 USER_APPS = [
     "api",
@@ -110,3 +107,9 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 # celery
 CELERY_BROKER_URL = "amqp://localhost"
+CELERY_ACCEPT_CONTENT = ["json"]
+# CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"

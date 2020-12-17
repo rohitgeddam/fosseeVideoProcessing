@@ -1,6 +1,7 @@
 # python core modules
 import time
 import datetime
+import json
 
 # 3rd party libraries
 from pydub import AudioSegment
@@ -14,12 +15,29 @@ from api.models import VideoModel, SrtModel, Chunk, FusedResult, AudioModel
 from api.serializers import VideoFileSerializer, SrtFileSerializer, ChunkSerializer
 from django.shortcuts import redirect
 from django.conf import settings
+from django.http import HttpResponse
 
 # imports for video manipulation
 from api import videoProcessingUtils
 from api import misc
 
 from .tasks import split_video_celery
+from celery.result import AsyncResult
+
+
+def get_progress(request, task_id):
+    print(task_id)
+    print("BEFORE RES")
+    result = AsyncResult(task_id)
+    print("AFtER RES")
+    print("res", result)
+    response_data = {
+        "state": result.state,
+        "details": result.info,
+    }
+
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+    # return Response(response_data, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])
@@ -54,9 +72,14 @@ def get_video_details(request, id):
 @api_view(["GET"])
 def split_video(request, id):
     if request.method == "GET":
-        split_video_celery.delay(id)
+        task = split_video_celery.delay(id)
         # return Response(message, status=status.HTTP_200_OK)
-        return Response("queued", status=status.HTTP_200_OK)
+
+        message = {
+            "task_id": task.task_id,
+        }
+        print("ID", task.task_id)
+        return Response(message, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])

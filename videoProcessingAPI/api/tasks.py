@@ -12,8 +12,8 @@ from api.serializers import VideoFileSerializer, SrtFileSerializer, ChunkSeriali
 #     pass
 
 
-@shared_task
-def split_video_celery(id):
+@shared_task(bind=True)
+def split_video_celery(self, id):
     start = time.time()
 
     videoFile = VideoModel.objects.get(id=id)
