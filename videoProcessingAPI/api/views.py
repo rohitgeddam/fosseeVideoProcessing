@@ -21,28 +21,22 @@ from django.http import HttpResponse
 from api import videoProcessingUtils
 from api import misc
 
-from .tasks import split_video_celery
+from .tasks import split_video_celery, process_and_generate_final_video_celery
 from celery.result import AsyncResult
 
 
 def get_progress(request, task_id):
     print(task_id)
-    print("BEFORE RES")
     result = AsyncResult(task_id)
-    print("AFtER RES")
-    print("res", result)
     response_data = {
         "state": result.state,
         "details": result.info,
     }
-
     return HttpResponse(json.dumps(response_data), content_type="application/json")
-    # return Response(response_data, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])
 def upload_files_to_server(request):
-
     if request.method == "POST":
         serializeVideo, serializeSrt = misc.handleUploadedFilesAndSave(request)
         message = {
@@ -50,7 +44,6 @@ def upload_files_to_server(request):
             "message": "files uploaded successfully",
             "operation_url": f"/api/process/{serializeVideo.data['id']}",
         }
-
     return Response(message, status=status.HTTP_201_CREATED)
 
 
@@ -65,7 +58,6 @@ def get_video_details(request, id):
             "downloadUrl": f"/api/download/{id}",
             "chunks": serializeChunk.data,
         }
-
         return Response(message, status=status.HTTP_200_OK)
 
 
@@ -73,12 +65,9 @@ def get_video_details(request, id):
 def split_video(request, id):
     if request.method == "GET":
         task = split_video_celery.delay(id)
-        # return Response(message, status=status.HTTP_200_OK)
-
         message = {
             "task_id": task.task_id,
         }
-        print("ID", task.task_id)
         return Response(message, status=status.HTTP_200_OK)
 
 
@@ -116,82 +105,8 @@ def reupload_audio_chunk(request, chunk_id):
 
 @api_view(["GET"])
 def process_and_generate_final_video(request, operationId):
-    bashFiles_path = settings.MEDIA_ROOT + "bashFiles"
-    misc.createDirectoryIfNotExists(bashFiles_path)
-    # creating directory to bashFiles with operationId as name
-    id_as_dir_name = bashFiles_path + f"/{operationId}/"
-    try:
-        misc.removeAndCreateDirectoryInSamePath(id_as_dir_name)
-        chunks = Chunk.objects.all().filter(operationId=operationId)
-
-        audi_file_path = f"{bashFiles_path}/{operationId}/{operationId}AUDI.txt"
-        vid_file_path = f"{bashFiles_path}/{operationId}/{operationId}VID.txt"
-
-        (
-            merged_audio_destination_path,
-            merged_video_destination_path,
-        ) = misc.get_merged_destination_paths(operationId)
-
-        final_download_path = settings.MEDIA_ROOT + "downloadable/"
-        misc.createDirectoryIfNotExists(final_download_path)
-
-        # check to see if files already exist if exists remove it
-        # removeAndCreateDirectoryInSamePath(merged_audio_destination_path,create=False)
-
-        # if os.path.exists(merged_audio_destination_path):
-        #     os.remove(merged_audio_destination_path)
-
-        misc.clean_up_dirs(merged_audio_destination_path)
-
-        misc.writePathsToTxtFileToUseWithFFMPEG(chunks, audi_file_path, vid_file_path)
-
-        # use the above files to combne audios and videos
-        videoProcessingUtils.mergeAudiosForDownload(
-            audi_file_path, merged_audio_destination_path
-        )
-        videoProcessingUtils.mergeVideoForDownload(
-            vid_file_path, merged_video_destination_path
-        )
-
-        if not os.path.exists(merged_audio_destination_path) and not os.path.exists(
-            merged_video_destination_path
-        ):
-            return Response(
-                {
-                    "message": "failed to create bash ffmpeg comand file",
-                }
-            )
-
-        videoProcessingUtils.mergeVideoAndAudioToGetDownloadFile(
-            operationId,
-            merged_video_destination_path,
-            merged_audio_destination_path,
-            final_download_path,
-        )
-
-        # save path of final downloadable file in db
-        videoInstance = VideoModel.objects.get(pk=operationId)
-        result = FusedResult(
-            operationId=videoInstance,
-            videoPath=f"{final_download_path}{operationId}.mp4",
-            videoName=f"{operationId}VIDEO.mp4",
-            videoUrl=settings.MEDIA_URL + f"downloadable/{operationId}.mp4",
-        )
-        result.save()
-
-        response = Response(
-            {
-                "message": "combined all video anc audio chunk into one file",
-                "name_of_file": result.videoName,
-                "download": result.videoUrl,
-            },
-            status=status.HTTP_200_OK,
-        )
-
-    except:
-        response = Response(
-            {"message": "Error occured while processing."},
-            status=status.HTTP_409_CONFLICT,
-        )
-
-    return response
+    task = process_and_generate_final_video_celery.delay(operationId)
+    message = {
+        "task_id": task.task_id,
+    }
+    return Response(message, status=status.HTTP_200_OK)
