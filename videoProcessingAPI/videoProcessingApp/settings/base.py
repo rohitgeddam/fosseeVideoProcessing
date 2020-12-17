@@ -4,7 +4,9 @@ from decouple import config
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = config(
+    "SECRET_KEY", default="3izb^ryglj(bvrjb2_y1fZvcnbky#358_l6-nn#i8fkug4mmz!"
+)
 
 # Application definition
 DJANGO_APPS = [
@@ -105,3 +107,6 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+# celery
+CELERY_BROKER_URL = "amqp://localhost"
