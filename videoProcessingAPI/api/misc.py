@@ -85,7 +85,6 @@ def createDirectoryIfNotExists(pathToDirectory, dirName=""):
 
 
 def splitAudioAndVideoIntoChunk(videoToSplit, audioToSplit, chunkData):
-    print("SPLIT", dir(videoToSplit), audioToSplit, "chunk dir ", dir(chunkData))
     splitedVideoChunk = videoToSplit.subclip(
         videoProcessingUtils.convertTimeToSeconds(
             chunkData.start.hours,
@@ -155,7 +154,6 @@ def extract_video_audio_seperately_save(
 
     onlyVideoPath = video.removeAudioFromVideoAndSave(pathToOnlyVideoDir, f"{id}.mp4")
     onlyAudioPath = video.extractAudioFromVideoAndSave(pathToOnlyAudioDir, f"{id}.mp3")
-    # print("AUDviD", onlyAudioPath, onlyVideoPath)
     return (onlyAudioPath, onlyVideoPath)
 
 
@@ -175,6 +173,7 @@ def split_by_chunk(id, srtData, video, audio, videoFile):
             videoChunkPath = settings.MEDIA_ROOT + f"videoSplit/{id}/{i}.mp4"
             audioChunkPath = settings.MEDIA_ROOT + f"audioSplit/{id}/{i}.mp3"
             # saving video cunk
+
             try:
                 videoPart.write_videofile(videoChunkPath)
             except TypeError:
@@ -188,8 +187,8 @@ def split_by_chunk(id, srtData, video, audio, videoFile):
             chunkEndTime = datetime.time(
                 chunk.end.hours, chunk.end.minutes, chunk.end.seconds
             )
-            audioChunkLocalPath, videoChunkLocalPath = get_local_paths_with_i(i)
-            audioChunkUrlPath, videoChunkUrlPath = get_url_paths_with_i(i)
+            audioChunkLocalPath, videoChunkLocalPath = get_local_paths_with_i(id, i)
+            audioChunkUrlPath, videoChunkUrlPath = get_url_paths_with_i(id, i)
 
             detailsAboutChunk = Chunk(
                 operationId=videoFile,
@@ -213,14 +212,14 @@ def split_by_chunk(id, srtData, video, audio, videoFile):
             break
 
 
-def get_local_paths_with_i(i):
+def get_local_paths_with_i(id, i):
 
     audioChunkLocalPath = settings.MEDIA_ROOT + f"audioSplit/{id}/{i}.mp3"
     videoChunkLocalPath = settings.MEDIA_ROOT + f"videoSplit/{id}/{i}.mp4"
     return (audioChunkLocalPath, videoChunkLocalPath)
 
 
-def get_url_paths_with_i(i):
+def get_url_paths_with_i(id, i):
     audioChunkUrlPath = settings.MEDIA_URL + f"audioSplit/{id}/{i}.mp3"
     videoChunkUrlPath = settings.MEDIA_URL + f"videoSplit/{id}/{i}.mp4"
     return (audioChunkUrlPath, videoChunkUrlPath)
