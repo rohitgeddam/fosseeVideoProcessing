@@ -1,0 +1,14 @@
+{
+  "name": "ui-v2",
+  "version": "1.0.0",
+  "description": "ui for video-processing app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "rohit geddam",
+  "license": "ISC",
+  "dependencies": {
+    "tailwindcss": "^2.0.2"
+  }
+}
