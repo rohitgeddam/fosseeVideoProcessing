@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 
 
@@ -9,7 +9,7 @@ import { UploadCard } from './sections'
 
 const Container = styled.div`
     display: flex;
-    background: #292F36;
+    /* background: #292F36; */
     height: 100vh;
     justify-content: center;
 `
@@ -17,9 +17,20 @@ const Container = styled.div`
 
 function App() {
   
+  const [uploadStageData, setUploadStageData] = useState({
+    operationId: null,
+    operationUrl: null, 
+  })
+  
+  useEffect( () => {
+    console.log(uploadStageData)
+  }, [uploadStageData])
   return (
     <Container className="App">
-      <UploadCard/>
+      {
+        !uploadStageData.operationId && 
+        <UploadCard submitFiles={setUploadStageData}/>
+      }
     </Container>
   );
 }

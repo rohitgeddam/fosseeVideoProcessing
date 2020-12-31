@@ -50,13 +50,19 @@ const ProcessBtn = styled.button`
     letter-spacing: 4px;
 `
 
+const ErrorMessage = styled.p`
+    color: red;
+    font-size: 16px;
+    cursor: pointer;
+`
 
-  
 
-export const UploadCard = () => {
+export const UploadCard = ({submitFiles}: any) => {
 
     const [videoFile, setVideoFile] = useState('');
     const [srtFile, setSrtFile] = useState('');
+
+    const [error, setError] = useState({ isError: false, message: ''})
 
     const handleSubmit = async (e: SyntheticEvent) => {
         e.preventDefault();
@@ -77,11 +83,19 @@ export const UploadCard = () => {
             )
             const operationId = response.data.operationId;
             const operationUrl = response.data.operation_url;
-            
+            clearError();
+            submitFiles({
+                operationId,
+                operationUrl
+            })
         } catch (err) {
+            setError({isError: true, message: "Failed to upload files"})
             console.log(err)
         }
-        
+    }
+
+    const clearError = () => {
+        setError({isError:false, message: ''})
     }
     
     return (
@@ -91,7 +105,12 @@ export const UploadCard = () => {
                 <Divider/>
                 <UploadButton label={"Choose srt file"} onChange={setSrtFile}/>
             </ButtonContainer>
+            { error.isError &&
+                <ErrorMessage onClick={clearError}>{error.message}</ErrorMessage>
+            }
             <ProcessBtn onClick={handleSubmit}>Process</ProcessBtn>
+
+           
         </Card>
         
     )
