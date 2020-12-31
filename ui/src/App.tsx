@@ -1,25 +1,26 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import styled from 'styled-components';
+
+
+import { Upload } from 'antd';
+
+import { UploadCard } from './sections'
+
+
+const Container = styled.div`
+    display: flex;
+    background: #292F36;
+    height: 100vh;
+    justify-content: center;
+`
+
 
 function App() {
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container className="App">
+      <UploadCard/>
+    </Container>
   );
 }
 
