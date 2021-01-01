@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
+import styled from 'styled-components';
+
 import { Table } from 'antd';
+
+const ResultsTableContainer = styled.div`
+
+
+
+`
 
 const columns = [
     {
@@ -64,7 +72,9 @@ export const ResultsTable =  ({result}: any) => {
 
     }, [])
     return (
-        <Table dataSource={dataSource} columns={columns}/>
+        <ResultsTableContainer>
+            <Table dataSource={dataSource} columns={columns}/>
+        </ResultsTableContainer>
     )
 }
 

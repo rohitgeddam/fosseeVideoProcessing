@@ -4,14 +4,15 @@ import styled from 'styled-components';
 import { api } from './lib'
 import { Result, Upload } from 'antd';
 
-import { UploadCard } from './sections'
-import { ResultsTable } from './sections'
+import { UploadCard, ResultsTable, ShowInfo, LoadingScreen} from './sections'
 
 
 const Container = styled.div`
     display: flex;
     /* background: #292F36; */
     height: 100vh;
+    width: 100%;
+    padding: 20px;
     justify-content: center;
 `
 
@@ -20,6 +21,14 @@ const Loading = styled.div`
   color: green;
 `
 
+const ProcessingResultsContainer = styled.div`
+
+    display: flex;
+    width: 100%;
+    align-items: flex-start;
+
+
+`
 
 function App() {
   
@@ -31,8 +40,8 @@ function App() {
   const [taskId, setTaskId] = useState(null);
   const [processingResult, setProcessingResult] = useState<null | any>(null);
 
-  const timer = useRef<any>();
-  const isProcessing = useRef<boolean>(false);
+  const timerRef = useRef<any>();
+  const isProcessingRef = useRef<boolean>(false);
 
   const startPolling = async (taskId: string) => {
     try{
@@ -42,22 +51,22 @@ function App() {
       )
       console.log("RESPONSE TASKID", response)
       if ( response.data.state === 'SUCCESS')
-        clearInterval(timer.current)
+        clearInterval(timerRef.current)
         setProcessingResult(response.data.details)
-        isProcessing.current = false
+        isProcessingRef.current = false
       } catch (err) {
           // setError({isError: true, message: "Failed to upload files"})
           console.log(err)
-          clearInterval(timer.current)
+          isProcessingRef.current = false
+          clearInterval(timerRef.current)
       }
-
-    
   }
 
   const startProcessingRequest = async () => {
    // start processing
    try{
-    isProcessing.current = true
+    isProcessingRef.current = true
+   
     const response = await api.get(
         `process/${uploadStageData.operationId}`,
     )
@@ -67,12 +76,13 @@ function App() {
    
     if(taskId){
       // poll with this taskId.
-      timer.current = setInterval(() => startPolling(taskId),3000)
+      timerRef.current = setInterval(() => startPolling(taskId),3000)
     }
     } catch (err) {
         // setError({isError: true, message: "Failed to upload files"})
         console.log(err)
-        clearInterval(timer.current)
+        // isProcessingRef.current = false
+        // clearInterval(timerRef.current)
     }
   }
 
@@ -81,29 +91,34 @@ function App() {
   useEffect( () => {
     if(uploadStageData.operationId) {
       startProcessingRequest();
-      
     }
     return () => {
-      clearInterval(timer.current)
+      clearInterval(timerRef.current)
     };
 
   }, [uploadStageData])
   
 
+console.log("is processing", isProcessingRef.current)
 
-if (isProcessing.current){
-  return <h1>Processing...</h1>
-}
 
   return (
     <Container className="App">
       {
-        !uploadStageData.operationId && 
-        <UploadCard uploadFiles={setUploadStageData}/>
+        isProcessingRef.current && <LoadingScreen text="Loading"/>
+      }
+      {
+        
+        !uploadStageData.operationId && <UploadCard uploadFiles={setUploadStageData}/>
+     
       }
      
       {
-        processingResult && <ResultsTable result={processingResult} />
+        processingResult && 
+        <ProcessingResultsContainer>
+          <ResultsTable result={processingResult} />
+          <ShowInfo info={processingResult} operationId={uploadStageData.operationId}/>
+        </ProcessingResultsContainer>
       }
      
 
