@@ -1,13 +1,13 @@
 import React, { SyntheticEvent, useState, useEffect} from 'react';
 
 
-import { api } from '../../lib'
+import { api } from '../../../lib'
 
 import styled from 'styled-components';
 
 import { Divider } from 'antd';
 
-import { UploadButton } from '.'
+import { UploadButton } from '..'
 
 const Card = styled.div`
     display: flex;
@@ -57,7 +57,7 @@ const ErrorMessage = styled.p`
 `
 
 
-export const UploadCard = ({uploadFiles}: any) => {
+export const UploadCard = ({handleUpload}: any) => {
     
     const [videoFile, setVideoFile] = useState('');
     const [srtFile, setSrtFile] = useState('');
@@ -84,10 +84,9 @@ export const UploadCard = ({uploadFiles}: any) => {
             const operationId = response.data.operationId;
             const operationUrl = response.data.operation_url;
             clearError();
-            uploadFiles({
-                operationId,
-                operationUrl
-            })
+          
+            handleUpload(operationId, operationUrl)
+
         } catch (err) {
             setError({isError: true, message: "Failed to upload files"})
             console.log(err)
