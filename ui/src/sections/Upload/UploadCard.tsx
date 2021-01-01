@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useState } from 'react';
+import React, { SyntheticEvent, useState, useEffect} from 'react';
 
 
 import { api } from '../../lib'
@@ -15,12 +15,12 @@ const Card = styled.div`
 
     justify-content: space-between;
     align-items: center;
-
+    border: none;
     max-height: 600px;
     min-height: 400px;
     min-width: 400px;
     max-width: 600px;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     align-self: center;
     background-color: #FFFFFF;
     box-shadow: 5px 5px 10px 15px rgba(0,0,0,0.2);
@@ -57,8 +57,8 @@ const ErrorMessage = styled.p`
 `
 
 
-export const UploadCard = ({submitFiles}: any) => {
-
+export const UploadCard = ({uploadFiles}: any) => {
+    
     const [videoFile, setVideoFile] = useState('');
     const [srtFile, setSrtFile] = useState('');
 
@@ -84,7 +84,7 @@ export const UploadCard = ({submitFiles}: any) => {
             const operationId = response.data.operationId;
             const operationUrl = response.data.operation_url;
             clearError();
-            submitFiles({
+            uploadFiles({
                 operationId,
                 operationUrl
             })
@@ -108,9 +108,7 @@ export const UploadCard = ({submitFiles}: any) => {
             { error.isError &&
                 <ErrorMessage onClick={clearError}>{error.message}</ErrorMessage>
             }
-            <ProcessBtn onClick={handleSubmit}>Process</ProcessBtn>
-
-           
+            <ProcessBtn onClick={handleSubmit}>Upload Files</ProcessBtn>
         </Card>
         
     )
