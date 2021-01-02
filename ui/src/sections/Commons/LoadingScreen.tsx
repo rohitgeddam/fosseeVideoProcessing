@@ -2,6 +2,7 @@ import React from 'react';
 import ReactLoading from 'react-loading';
 
 import styled from 'styled-components';
+import { LoadingScreenProp } from '../../lib';
 
 const Loading = styled.div`
     display: flex;
@@ -17,18 +18,13 @@ const Loading = styled.div`
     left: 0;
     font-size: 32px;
     font-family: cursive;
+`;
 
-
-`
-
-
-export const LoadingScreen = ({text}: any) => {
+export const LoadingScreen: React.FC<LoadingScreenProp> = ({ text = '' }) => {
     return (
         <Loading>
-            <ReactLoading type={"cylon"} color={"#000"} height={400} width={375} />
+            <ReactLoading type={'cylon'} color={'#000'} height={400} width={375} />
             {text}
         </Loading>
-    )
-}
-
-
+    );
+};

@@ -1,8 +1,9 @@
 import React from 'react';
 
 import styled from 'styled-components';
+import { ButtonProps } from '../../../lib';
 
-const Btn= styled.button`
+const Btn = styled.button`
     display: flex;
     justify-content: center;
     border: none;
@@ -22,24 +23,18 @@ const Btn= styled.button`
         color: #ffd66b;
         transform: scale(1.1);
     }
-`
+`;
 
 const Children = styled.div`
     align-self: flex-end;
     margin-left: auto;
-`
+`;
 
-
-export const Button = ({text, onClick, children}: any) => {
+export const Button: React.FC<ButtonProps> = ({ text, onClick, children }) => {
     return (
-    <Btn onClick={onClick}>
-        {text}
-        <Children>
-            {children}
-        </Children>
-    
-    </Btn>
-    )
-}
-
-
+        <Btn onClick={onClick}>
+            {text}
+            <Children>{children}</Children>
+        </Btn>
+    );
+};

@@ -1,1 +1,1 @@
-declare module "mic-recorder-to-mp3"
+declare module 'mic-recorder-to-mp3';

@@ -1,25 +1,26 @@
-import React, { useState , useRef } from 'react';
+import React, { useState, useRef } from 'react';
 
 import styled from 'styled-components';
 
-import  MicRecorder  from 'mic-recorder-to-mp3'
+import MicRecorder from 'mic-recorder-to-mp3';
 
-import { api } from '../../../lib/api'
-import { ErrorBox, useError } from '../../../sections'
+import { api } from '../../../lib/api';
+import { ErrorBox, useError } from '../../../sections';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlay, faStop } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlay, faStop } from '@fortawesome/free-solid-svg-icons';
+import { UploadBtnProps } from '../../../lib';
 
-const Upload= styled.div`
+const Upload = styled.div`
     display: flex;
     justify-content: center;
     border: none;
     width: 100%;
-   
-    align-items:center;
+
+    align-items: center;
     background-color: transparent;
     outline: none;
-`
+`;
 const Btn = styled.button`
     border: none;
     background: transparent;
@@ -30,14 +31,11 @@ const Btn = styled.button`
     &:hover {
         transform: scale(1.2);
         color: #ffd66b;
-    
     }
-`
+`;
 
-
-
-export const AudioUploadMic = ({chunkId}: any) => {
-    const [error, setError, clearError ] = useError();
+export const AudioUploadMic: React.FC<UploadBtnProps> = ({ chunkId }) => {
+    const [error, setError, clearError] = useError();
     const [isRecording, setIsRecording] = useState(false);
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -45,88 +43,80 @@ export const AudioUploadMic = ({chunkId}: any) => {
     const recorder = useRef<any>(null);
 
     const handleAudioReupload = async (file: any) => {
-        
-       
-
         const formData = new FormData();
         formData.append('file', file);
 
         try {
-            const response = await api.post(
-                `reupload/${chunkId}`,
-                formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                }
-            )
+            await api.post(`reupload/${chunkId}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
         } catch (err) {
-            setError(err.message)
+            setError(err.message);
         }
 
         setIsLoading(false);
-    }
+    };
 
     const startRecording = () => {
-         recorder.current = new MicRecorder({bitRate: 64})
+        recorder.current = new MicRecorder({ bitRate: 64 });
 
-        recorder.current.start().then(() => {
-            // something else
-        }).catch((e: any) => {
-            console.error(e);
-        });
-    }
+        recorder.current
+            .start()
+            .then(() => {
+                // something else
+            })
+            .catch((e: any) => {
+                console.error(e);
+            });
+    };
 
     const stopRecording = () => {
         recorder.current
-        .stop()
-        .getMp3().then(([buffer, blob]: any) => {
-            const file = new File(buffer, `${chunkId}.mp3`, {
-                type: blob.type,
-                lastModified: Date.now()
+            .stop()
+            .getMp3()
+            .then(([buffer, blob]: any) => {
+                const file = new File(buffer, `${chunkId}.mp3`, {
+                    type: blob.type,
+                    lastModified: Date.now(),
+                });
+
+                const player = new Audio(URL.createObjectURL(file));
+                player.play();
+                handleAudioReupload(file);
+            })
+            .catch((e: any) => {
+                alert('We could not retrieve your message');
+                console.log(e);
             });
-            
-            const player = new Audio(URL.createObjectURL(file));
-            player.play();
-            handleAudioReupload(file);
-        }).catch((e: any) => {
-        alert('We could not retrieve your message');
-        console.log(e);
-        });
-    }
+    };
 
     const handleRecording = () => {
-      
         if (!isRecording) {
             startRecording();
         } else {
             stopRecording();
         }
 
-        setIsRecording( (state) => !state)
-    }
+        setIsRecording((state) => !state);
+    };
 
     return (
         <>
-        { error.isError &&
-                <ErrorBox text={error.message} onClick={clearError}/>
-            }
+            {error.isError && <ErrorBox text={error.message} onClick={clearError} />}
 
-        <Upload>
-            {
-                !isRecording ? 
-                <Btn onClick={handleRecording}>
-                    <FontAwesomeIcon icon={faPlay}/>
-                </Btn>
-                :
-                <Btn onClick={handleRecording}>
-                    <FontAwesomeIcon icon={faStop}/>
-                </Btn>
-            }
-        </Upload>
+            <Upload>
+                {!isRecording ? (
+                    <Btn onClick={handleRecording}>
+                        <FontAwesomeIcon icon={faPlay} />
+                    </Btn>
+                ) : (
+                    <Btn onClick={handleRecording}>
+                        <FontAwesomeIcon icon={faStop} />
+                    </Btn>
+                )}
+            </Upload>
         </>
-    )
-}
-
-
+    );
+};

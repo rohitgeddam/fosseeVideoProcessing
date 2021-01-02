@@ -1,24 +1,22 @@
-import React, {useState} from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
-import { ResultsTable } from '.'
-import { ShowInfo } from '../Info'
+import { ResultsTable } from '.';
+import { EditProps } from '../../lib';
+import { ShowInfo } from '../Info';
 
 const ProcessingResultsContainer = styled.div`
-
     display: flex;
     width: 100%;
     justify-content: center;
     align-items: flex-start;
-`
+`;
 
-export const Edit = ({data}: any) => {
-
+export const Edit: React.FC<EditProps> = ({ data }) => {
     return (
         <ProcessingResultsContainer>
-            <ResultsTable result={data}/>
-            <ShowInfo data={data}/>
+            <ResultsTable data={data} />
+            <ShowInfo data={data} />
         </ProcessingResultsContainer>
-  
-    )
-}
+    );
+};

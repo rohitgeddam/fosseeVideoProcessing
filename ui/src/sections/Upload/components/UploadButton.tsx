@@ -1,11 +1,6 @@
-import React, {SyntheticEvent} from 'react';
+import React from 'react';
 import styled from 'styled-components';
-
-
-// interface props {
-//     label: string;
-//     onChange: (arg0: any) =>  React.Dispatch<React.SetStateAction<null>>
-// }
+import { UploadButtonProps } from '../../../lib';
 
 const ButtonContainer = styled.div`
     display: flex;
@@ -22,22 +17,17 @@ const ButtonContainer = styled.div`
         background-color: transparent;
         color: blue;
     }
-`
+`;
 
-export const UploadButton = ( {label, onChange}: any ) => {
-
-    const handleChange = (e: any) => {
-
-        onChange(e.target.files[0])
-    }
+export const UploadButton: React.FC<UploadButtonProps> = ({ label, onChange }) => {
+    const handleChange = (e: any): void => {
+        onChange(e.target.files[0]);
+    };
 
     return (
-
         <ButtonContainer>
             <label>{label}</label>
-            <input type="file" onChange={handleChange}/>
+            <input type="file" onChange={handleChange} />
         </ButtonContainer>
-
-    )
-}
-
+    );
+};
