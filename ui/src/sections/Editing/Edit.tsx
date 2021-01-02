@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 
 import { ResultsTable } from '.'
@@ -15,6 +15,7 @@ const ProcessingResultsContainer = styled.div`
 `
 
 export const Edit = ({data}: any) => {
+
     return (
         <ProcessingResultsContainer>
             <ResultsTable result={data}/>

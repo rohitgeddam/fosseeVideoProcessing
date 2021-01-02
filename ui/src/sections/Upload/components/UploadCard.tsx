@@ -7,7 +7,8 @@ import styled from 'styled-components';
 
 import { Divider } from 'antd';
 
-import { UploadButton } from '..'
+import { UploadButton, useError, ErrorBox } from '../../../sections'
+
 
 const Card = styled.div`
     display: flex;
@@ -49,11 +50,7 @@ const ProcessBtn = styled.button`
     letter-spacing: 4px;
 `
 
-const ErrorMessage = styled.p`
-    color: red;
-    font-size: 16px;
-    cursor: pointer;
-`
+
 
 
 export const UploadCard = ({handleUpload}: any) => {
@@ -61,7 +58,7 @@ export const UploadCard = ({handleUpload}: any) => {
     const [videoFile, setVideoFile] = useState('');
     const [srtFile, setSrtFile] = useState('');
 
-    const [error, setError] = useState({ isError: false, message: ''})
+    const [error, setError, clearError ] = useError();
 
     const handleSubmit = async (e: SyntheticEvent) => {
         e.preventDefault();
@@ -86,14 +83,10 @@ export const UploadCard = ({handleUpload}: any) => {
             handleUpload(operationId, operationUrl)
 
         } catch (err) {
-            setError({isError: true, message: "Failed to upload files"})
+            setError(err.message)
         }
     }
 
-    const clearError = () => {
-        setError({isError:false, message: ''})
-    }
-    
     return (
         <Card>
             <ButtonContainer>
@@ -102,7 +95,8 @@ export const UploadCard = ({handleUpload}: any) => {
                 <UploadButton label={"Choose srt file"} onChange={setSrtFile}/>
             </ButtonContainer>
             { error.isError &&
-                <ErrorMessage onClick={clearError}>{error.message}</ErrorMessage>
+                // <ErrorMessage onClick={clearError}>{error.message}</ErrorMessage>
+                <ErrorBox text={error.message} onClick={clearError}/>
             }
             <ProcessBtn onClick={handleSubmit}>Upload Files</ProcessBtn>
         </Card>

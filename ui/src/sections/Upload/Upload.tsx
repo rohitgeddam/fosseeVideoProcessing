@@ -5,11 +5,11 @@ import { UploadCard } from '.';
 
 import {api} from '../../lib/api';
 
+import {ErrorBox, useError } from '../../sections'
+
 export const Upload = ({setScreen, setResponse, setProcessingFlag}: any) => {
-    useEffect(()=> {
-        console.log("Upload is running");
-        return ( () => console.log("upload is unmounting"))
-      })
+
+    const [error, setError, clearError ] = useError();
 
     const timerRef = useRef<any>(null);
   
@@ -19,11 +19,9 @@ export const Upload = ({setScreen, setResponse, setProcessingFlag}: any) => {
             const response = await api.get(
                 `status/${taskId}`
             )
-            
-
             return response;
         } catch (err) {
-            throw new Error(err);
+            setError(err.message);
             
         }
         
@@ -37,10 +35,7 @@ export const Upload = ({setScreen, setResponse, setProcessingFlag}: any) => {
           
             const taskId = response.data.task_id;
             timerRef.current = setInterval( async () => {
-                
-                const response = await getStatus(taskId);
-                console.log(response)
-
+                const response: any = await getStatus(taskId);
                 if (response.data.state === 'SUCCESS'){
                     const data = response.data.details;
                     setResponse(data);
@@ -50,14 +45,14 @@ export const Upload = ({setScreen, setResponse, setProcessingFlag}: any) => {
                 }
             },5000)
         } catch (err) {
-            throw new Error(err);
-            
+            // clearInterval(timerRef.current)
+            setError(err.message);
+            // throw new Error(err.message)
         }
     }
 
     
     const handleUpload =  (operationId: string, operationUrl: string) => {
-        console.log(operationId, operationUrl)
         setProcessingFlag(true);
         polling(operationId);
     }
@@ -65,6 +60,11 @@ export const Upload = ({setScreen, setResponse, setProcessingFlag}: any) => {
        
         
     return (
+        <>
+        { error.isError &&
+            <ErrorBox text={error.message} onClick={clearError}/>
+        }
         <UploadCard handleUpload={handleUpload}/>
+        </>
     )
 }

@@ -39,6 +39,7 @@ if (isProcessing){
 
 if(onUploadScreen) {
   return (
+   
     <Container className="App">
       <Upload setScreen={setOnUploadScreen} setResponse={setProcessingResponse} setProcessingFlag={setIsProcessing}/>
     </Container>

@@ -6,6 +6,7 @@ import ReactLoading from 'react-loading';
 
 import { api } from '../../lib';
 import {Button} from './components';
+import { useError, ErrorBox } from '../../sections'
 
 const InfoDiv = styled.div`
     display: flex;
@@ -32,8 +33,10 @@ const Heading = styled.div`
 
 export const ShowInfo = ({data}: any) => {
     const [showDownloadBtn, setShowDownloadBtn] = useState(false)
-    const [generateResultResponse, setGenerateResultResponse] = useState<any>(null)
+    const [compileResultResponse, setcompileResultResponse] = useState<any>(null)
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [error, setError, clearError ] = useError();
+
 
     const timerRef = useRef<any>(null)
 
@@ -44,8 +47,7 @@ export const ShowInfo = ({data}: any) => {
             )
             return response;
         } catch (err) {
-            throw new Error(err);
-            
+            setError(err.message);
         }
     }
 
@@ -61,26 +63,27 @@ export const ShowInfo = ({data}: any) => {
 
             timerRef.current = setInterval( async () => {
                 
-                const response = await getStatus(taskId);
+                const response: any = await getStatus(taskId);
                
 
                 if (response.data.state === 'SUCCESS'){
                     const data = response.data.details;
                     console.log('data adfjoasdjf', data)
                     // setFlag(false);
-                    setGenerateResultResponse(data);
+                    setcompileResultResponse(data);
                     setIsLoading(false);
                     setShowDownloadBtn(true);
                     clearInterval(timerRef.current)
                 }
             },3000)
         } catch (err) {
-            throw new Error(err);
-            
+            setIsLoading(false);
+            clearInterval(timerRef.current)
+            setError(err.message);
         }
     }
 
-    const handleGenerate = async () => {
+    const handleCompile = async () => {
         
 
         setShowDownloadBtn(false);
@@ -89,11 +92,16 @@ export const ShowInfo = ({data}: any) => {
     }
 
     return (
+        <>
+        { error.isError &&
+                // <ErrorMessage onClick={clearError}>{error.message}</ErrorMessage>
+                <ErrorBox text={error.message} onClick={clearError}/>
+        }
     <InfoDiv>
         <Heading>Info</Heading>
         <p>Total Chunks: <b>{data.chunks.length}</b></p>
         <p>Time Taken To Process: <b>{data.timeTaken}</b></p>
-        <Button text={"Generate"} onClick={handleGenerate}>
+        <Button text={"Compile"} onClick={handleCompile}>
         {
             isLoading &&
             <ReactLoading type={"bars"} color={"#ffd66b"} height={25} width={25} />
@@ -103,11 +111,13 @@ export const ShowInfo = ({data}: any) => {
         
         {
             showDownloadBtn &&
-            <a href={`http://localhost:8000${generateResultResponse.download}`} target="_blank" rel="noopener noreferrer" download>
+            <a href={`http://localhost:8000${compileResultResponse.download}`} target="_blank" rel="noopener noreferrer" download>
                 <Button text={"Download"}></Button>
             </a>
         }
+        
     </InfoDiv>
+    </>
     )
 }
 

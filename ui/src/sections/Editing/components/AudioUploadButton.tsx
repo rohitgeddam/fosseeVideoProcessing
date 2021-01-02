@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import ReactLoading from 'react-loading';
 
 import { api } from '../../../lib/api'
+import { ErrorBox, useError } from '../../../sections'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFileUpload } from '@fortawesome/free-solid-svg-icons'
@@ -32,11 +33,11 @@ const Upload= styled.div`
 `
 
 export const AudioUploadButton = ({chunkId}: any) => {
+    const [error, setError, clearError ] = useError();
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const handleAudioReupload = async (e: any) => {
-        console.log(chunkId);
         
         setIsLoading(true);
 
@@ -55,15 +56,20 @@ export const AudioUploadButton = ({chunkId}: any) => {
                     }
                 }
             )
-            console.log("RESAHDASJDHA", response);
         } catch (err) {
-            console.log(err);
+            setError(err.message)
         }
 
         setIsLoading(false);
     }
 
     return (
+        <>
+        { error.isError &&
+                // <ErrorMessage onClick={clearError}>{error.message}</ErrorMessage>
+                <ErrorBox text={error.message} onClick={clearError}/>
+            }
+
         <Upload>
             <label htmlFor={chunkId}>
                 <FontAwesomeIcon icon={faFileUpload}/>
@@ -78,6 +84,7 @@ export const AudioUploadButton = ({chunkId}: any) => {
             
             <input id={chunkId} onChange={handleAudioReupload} type="file"/>
         </Upload>
+        </>
     )
 }
 
