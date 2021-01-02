@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import ReactLoading from 'react-loading';
 
 
-import { api } from '../../lib';
+import { api, BASE_URL, getTaskStatus} from '../../lib';
 import {Button} from './components';
 import { useError, ErrorBox } from '../../sections'
 
@@ -18,6 +18,8 @@ const InfoDiv = styled.div`
     min-width: 200px;
     max-width: 400px;
     font-size: 16px;
+
+    box-shadow: -5px 10px 5px 1px rgba(0,0,0,0.2)
 
 `
 
@@ -36,20 +38,8 @@ export const ShowInfo = ({data}: any) => {
     const [compileResultResponse, setcompileResultResponse] = useState<any>(null)
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError, clearError ] = useError();
-
-
     const timerRef = useRef<any>(null)
 
-    const getStatus = async (taskId: string) => {
-        try {
-            const response = await api.get(
-                `status/${taskId}`
-            )
-            return response;
-        } catch (err) {
-            setError(err.message);
-        }
-    }
 
 
 
@@ -58,18 +48,12 @@ export const ShowInfo = ({data}: any) => {
             const response = await api.get(
                 `generate/${operationId}`
             )
-          
             const taskId = response.data.task_id;
-
-            timerRef.current = setInterval( async () => {
-                
-                const response: any = await getStatus(taskId);
+            timerRef.current = setInterval( async () => { 
+                const response: any = await getTaskStatus(taskId);
                
-
                 if (response.data.state === 'SUCCESS'){
                     const data = response.data.details;
-                    console.log('data adfjoasdjf', data)
-                    // setFlag(false);
                     setcompileResultResponse(data);
                     setIsLoading(false);
                     setShowDownloadBtn(true);
@@ -93,31 +77,31 @@ export const ShowInfo = ({data}: any) => {
 
     return (
         <>
-        { error.isError &&
-                // <ErrorMessage onClick={clearError}>{error.message}</ErrorMessage>
-                <ErrorBox text={error.message} onClick={clearError}/>
+        { 
+            error.isError &&
+            <ErrorBox text={error.message} onClick={clearError}/>
         }
-    <InfoDiv>
-        <Heading>Info</Heading>
-        <p>Total Chunks: <b>{data.chunks.length}</b></p>
-        <p>Time Taken To Process: <b>{data.timeTaken}</b></p>
-        <Button text={"Compile"} onClick={handleCompile}>
-        {
-            isLoading &&
-            <ReactLoading type={"bars"} color={"#ffd66b"} height={25} width={25} />
+            <InfoDiv>
+                <Heading>Info</Heading>
+                <p>Total Chunks: <b>{data.chunks.length}</b></p>
+                <p>Time Taken To Process: <b>{data.timeTaken}</b></p>
+                <Button text={"Compile"} onClick={handleCompile}>
+                {
+                    isLoading &&
+                    <ReactLoading type={"bars"} color={"#ffd66b"} height={25} width={25} />
 
-        }
-        </Button>
-        
-        {
-            showDownloadBtn &&
-            <a href={`http://localhost:8000${compileResultResponse.download}`} target="_blank" rel="noopener noreferrer" download="result.mp4">
-                <Button text={"Download"}></Button>
-            </a>
-        }
-        
-    </InfoDiv>
-    </>
+                }
+                </Button>
+                
+                {
+                    showDownloadBtn &&
+                    <a href={`${BASE_URL}${compileResultResponse.download}`} target="_blank" rel="noopener noreferrer" download="result.mp4">
+                        <Button text={"Download"}></Button>
+                    </a>
+                }
+                
+            </InfoDiv>
+        </>
     )
 }
 

@@ -1,7 +1,6 @@
 import React, { useState , useRef } from 'react';
 
 import styled from 'styled-components';
-import ReactLoading from 'react-loading';
 
 import  MicRecorder  from 'mic-recorder-to-mp3'
 
@@ -83,16 +82,14 @@ export const AudioUploadMic = ({chunkId}: any) => {
         recorder.current
         .stop()
         .getMp3().then(([buffer, blob]: any) => {
-        // do what ever you want with buffer and blob
-        // Example: Create a mp3 file and play
-        const file = new File(buffer, `${chunkId}.mp3`, {
-            type: blob.type,
-            lastModified: Date.now()
-        });
-        
-        const player = new Audio(URL.createObjectURL(file));
-        player.play();
-        handleAudioReupload(file);
+            const file = new File(buffer, `${chunkId}.mp3`, {
+                type: blob.type,
+                lastModified: Date.now()
+            });
+            
+            const player = new Audio(URL.createObjectURL(file));
+            player.play();
+            handleAudioReupload(file);
         }).catch((e: any) => {
         alert('We could not retrieve your message');
         console.log(e);
@@ -113,7 +110,6 @@ export const AudioUploadMic = ({chunkId}: any) => {
     return (
         <>
         { error.isError &&
-                // <ErrorMessage onClick={clearError}>{error.message}</ErrorMessage>
                 <ErrorBox text={error.message} onClick={clearError}/>
             }
 
@@ -127,12 +123,7 @@ export const AudioUploadMic = ({chunkId}: any) => {
                 <Btn onClick={handleRecording}>
                     <FontAwesomeIcon icon={faStop}/>
                 </Btn>
-
             }
-               
-
-                
-            
         </Upload>
         </>
     )

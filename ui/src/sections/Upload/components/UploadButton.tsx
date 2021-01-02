@@ -1,12 +1,6 @@
 import React, {SyntheticEvent} from 'react';
 import styled from 'styled-components';
 
-import { Upload, message, Button } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
-
-
-
-
 
 // interface props {
 //     label: string;

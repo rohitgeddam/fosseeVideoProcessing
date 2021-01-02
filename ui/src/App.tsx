@@ -8,8 +8,8 @@ import {Upload, Edit, LoadingScreen} from './sections'
 
 const Container = styled.div`
     display: flex;
-    /* background: #292F36; */
-    height: 100vh;
+    background: #f1f1f1;
+    min-height: 100vh;
     width: 100%;
     padding: 20px;
     justify-content: center;
@@ -34,7 +34,7 @@ function App() {
   })
   
 if (isProcessing){
-  return <LoadingScreen text={"Please wait while we are processing your request"}/>
+  return <LoadingScreen text={"Please wait. Processing might take several minutes"}/>
 }
 
 if(onUploadScreen) {

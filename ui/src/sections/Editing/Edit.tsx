@@ -10,8 +10,6 @@ const ProcessingResultsContainer = styled.div`
     width: 100%;
     justify-content: center;
     align-items: flex-start;
-
-
 `
 
 export const Edit = ({data}: any) => {

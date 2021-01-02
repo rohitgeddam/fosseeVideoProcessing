@@ -3,13 +3,11 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { Table } from 'antd';
-import { AudioUploadButton,  AudioUploadMic } from '.';
 
-const ResultsTableContainer = styled.div`
+import { BASE_URL } from '../../../lib'
+import { AudioUploadButton,  AudioUploadMic } from '../../../sections';
 
-
-
-`
+const ResultsTableContainer = styled.div``
 
 const columns = [
     {
@@ -36,13 +34,13 @@ const columns = [
         title: 'Video',
         dataIndex: 'videoChunkPath',
         key: 'videoChunkPath',
-        render: (link: string) => <a href={`http://localhost:8000${link}`} target="_blank">view</a>
+        render: (link: string) => <a href={`${BASE_URL}${link}`} target="_blank" rel="noopener noreferrer">view</a>
       },
       {
         title: 'Audio',
         dataIndex: 'audioChunkPath',
         key: 'audioChunkPath',
-        render: (link: string) => <a href={`http://localhost:8000${link}`} target="_blank">view</a>
+        render: (link: string) => <a href={`${BASE_URL}${link}`} target="_blank" rel="noopener noreferrer">view</a>
 
       },
       {
@@ -67,16 +65,11 @@ export const ResultsTable =  ({result}: any) => {
     useEffect(() => {
         const data = result.chunks.map((chunk: any) => {
             return {
-                // key: chunk.me,
-                // id: chunk.id,
                 me: chunk.me,
-                // operationId: chunk.operationId,
                 startTime: chunk.startTime,
                 endTime: chunk.endTime,
                 subtitleChunk: chunk.subtitleChunk,
-                // videoChunkName: chunk.videoChunkName,
                 videoChunkPath: chunk.videoChunkPath,
-                // audioChunkName: chunk.audioChunkName,
                 audioChunkPath: chunk.audioChunkPath,
                 swapAudioFile: chunk.id,
                 swapAudioMic: chunk.id

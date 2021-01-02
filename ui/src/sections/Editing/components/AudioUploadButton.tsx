@@ -66,7 +66,6 @@ export const AudioUploadButton = ({chunkId}: any) => {
     return (
         <>
         { error.isError &&
-                // <ErrorMessage onClick={clearError}>{error.message}</ErrorMessage>
                 <ErrorBox text={error.message} onClick={clearError}/>
             }
 
