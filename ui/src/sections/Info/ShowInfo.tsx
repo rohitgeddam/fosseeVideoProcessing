@@ -12,14 +12,15 @@ const InfoDiv = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    padding: 10px;
     min-height: 200px;
     max-height: 400px;
     margin: 0 40px;
     min-width: 200px;
     max-width: 400px;
     font-size: 16px;
-
-    box-shadow: -5px 10px 5px 1px rgba(0,0,0,0.2)
+    box-shadow: 5px 10px 5px 1px rgba(0,0,0,0.2);
+    border-radius: 10px;
 
 `
 
@@ -29,6 +30,8 @@ const Heading = styled.div`
     background-color: #ffd66b;
     font-size: 24px;
     text-align: center;
+    margin-bottom: 10px;
+    letter-spacing: 3px;
 `
 
 
@@ -84,7 +87,7 @@ export const ShowInfo = ({data}: any) => {
             <InfoDiv>
                 <Heading>Info</Heading>
                 <p>Total Chunks: <b>{data.chunks.length}</b></p>
-                <p>Time Taken To Process: <b>{data.timeTaken}</b></p>
+                <p>Time Taken To Process: <b>{parseFloat(data.timeTaken).toFixed(2)} sec</b></p>
                 <Button text={"Compile"} onClick={handleCompile}>
                 {
                     isLoading &&

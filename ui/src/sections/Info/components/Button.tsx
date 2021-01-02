@@ -12,12 +12,15 @@ const Btn= styled.button`
     background-color: #23120b;
     color: #f1f1f1;
     font-size: 14px;
-    
+    transition: width 1s, height 1s, transform 0.5s;
+
+    letter-spacing: 3px;
     outline: none;
     margin-top: 10px;
 
     &:hover {
         color: #ffd66b;
+        transform: scale(1.1);
     }
 `
 
