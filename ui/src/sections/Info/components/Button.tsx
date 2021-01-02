@@ -3,7 +3,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Btn= styled.button`
-
+    display: flex;
+    justify-content: center;
     border: none;
     width: 100%;
     cursor: pointer;
@@ -11,18 +12,29 @@ const Btn= styled.button`
     background-color: #23120b;
     color: #f1f1f1;
     font-size: 16px;
-    text-align: center;
+    
     outline: none;
     margin: 10px 0;
+
     &:hover {
         color: #ffd66b;
     }
 `
 
-export const Button = ({text, onClick}: any) => {
+const Children = styled.div`
+    align-self: flex-end;
+    margin-left: auto;
+`
+
+
+export const Button = ({text, onClick, children}: any) => {
     return (
     <Btn onClick={onClick}>
         {text}
+        <Children>
+            {children}
+        </Children>
+    
     </Btn>
     )
 }

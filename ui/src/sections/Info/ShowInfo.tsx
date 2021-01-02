@@ -1,6 +1,9 @@
 import React, {useState, useRef} from 'react';
 
 import styled from 'styled-components';
+import ReactLoading from 'react-loading';
+
+
 import { api } from '../../lib';
 import {Button} from './components';
 
@@ -31,6 +34,7 @@ const Heading = styled.div`
 export const ShowInfo = ({data}: any) => {
     const [showDownloadBtn, setShowDownloadBtn] = useState(false)
     const [generateResultResponse, setGenerateResultResponse] = useState<any>(null)
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const timerRef = useRef<any>(null)
 
@@ -66,6 +70,7 @@ export const ShowInfo = ({data}: any) => {
                     console.log('data adfjoasdjf', data)
                     // setFlag(false);
                     setGenerateResultResponse(data);
+                    setIsLoading(false);
                     setShowDownloadBtn(true);
                     clearInterval(timerRef.current)
                 }
@@ -78,7 +83,9 @@ export const ShowInfo = ({data}: any) => {
 
     const handleGenerate = async () => {
         
+
         setShowDownloadBtn(false);
+        setIsLoading(true);
         polling(data.operationId)
     }
 
@@ -87,7 +94,14 @@ export const ShowInfo = ({data}: any) => {
         <Heading>Info</Heading>
         <p>Total Chunks: <b>{data.chunks.length}</b></p>
         <p>Time Taken To Process: <b>{data.timeTaken}</b></p>
-        <Button text={"Generate"} onClick={handleGenerate}></Button>
+        <Button text={"Generate"} onClick={handleGenerate}>
+        {
+            isLoading &&
+            <ReactLoading type={"bars"} color={"#fff"} height={25} width={25} />
+
+        }
+        </Button>
+        
         {
             showDownloadBtn &&
             <a href={`http://localhost:8000${generateResultResponse.download}`} target="_blank" rel="noopener noreferrer" download>
