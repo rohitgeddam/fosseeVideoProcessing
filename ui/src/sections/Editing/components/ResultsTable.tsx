@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { Table } from 'antd';
-import { AudioUploadButton } from '.';
+import { AudioUploadButton,  AudioUploadMic } from '.';
 
 const ResultsTableContainer = styled.div`
 
@@ -46,12 +46,17 @@ const columns = [
 
       },
       {
-        title: 'Swap Audio',
-        dataIndex: 'swapAudio',
-        key: 'swapAudio',
+        title: 'Swap Audio File',
+        dataIndex: 'swapAudioFile',
+        key: 'swapAudioFile',
         render: (chunkId: string) => <AudioUploadButton chunkId={chunkId}/>
-      }
-      
+      },
+    {
+      title: 'Swap Audio Mic',
+      dataIndex: 'swapAudioMic',
+      key: 'swapAudioMic',
+      render: (chunkId: string) => <AudioUploadMic chunkId={chunkId}/>
+    }
 ]
 
 export const ResultsTable =  ({result}: any) => {
@@ -73,7 +78,8 @@ export const ResultsTable =  ({result}: any) => {
                 videoChunkPath: chunk.videoChunkPath,
                 // audioChunkName: chunk.audioChunkName,
                 audioChunkPath: chunk.audioChunkPath,
-                swapAudio: chunk.id
+                swapAudioFile: chunk.id,
+                swapAudioMic: chunk.id
             }
             
         })

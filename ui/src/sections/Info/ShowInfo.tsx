@@ -111,7 +111,7 @@ export const ShowInfo = ({data}: any) => {
         
         {
             showDownloadBtn &&
-            <a href={`http://localhost:8000${compileResultResponse.download}`} target="_blank" rel="noopener noreferrer" download>
+            <a href={`http://localhost:8000${compileResultResponse.download}`} target="_blank" rel="noopener noreferrer" download="result.mp4">
                 <Button text={"Download"}></Button>
             </a>
         }
