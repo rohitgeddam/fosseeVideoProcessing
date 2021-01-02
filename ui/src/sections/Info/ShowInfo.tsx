@@ -11,7 +11,6 @@ const InfoDiv = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-
     min-height: 200px;
     max-height: 400px;
     margin: 0 40px;
@@ -25,7 +24,7 @@ const Heading = styled.div`
     width: 100%;
     color: black;
     background-color: #ffd66b;
-    font-size: 20px;
+    font-size: 24px;
     text-align: center;
 `
 
@@ -97,7 +96,7 @@ export const ShowInfo = ({data}: any) => {
         <Button text={"Generate"} onClick={handleGenerate}>
         {
             isLoading &&
-            <ReactLoading type={"bars"} color={"#fff"} height={25} width={25} />
+            <ReactLoading type={"bars"} color={"#ffd66b"} height={25} width={25} />
 
         }
         </Button>

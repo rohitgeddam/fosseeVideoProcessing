@@ -8,6 +8,7 @@ const ProcessingResultsContainer = styled.div`
 
     display: flex;
     width: 100%;
+    justify-content: center;
     align-items: flex-start;
 
 

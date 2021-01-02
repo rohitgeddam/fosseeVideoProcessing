@@ -1,2 +1,2 @@
-export * from './components/ResultsTable'
+export * from './components'
 export * from './Edit'

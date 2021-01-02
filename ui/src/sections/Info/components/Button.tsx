@@ -11,7 +11,7 @@ const Btn= styled.button`
     padding: 16px;
     background-color: #23120b;
     color: #f1f1f1;
-    font-size: 16px;
+    font-size: 14px;
     
     outline: none;
     margin: 10px 0;
