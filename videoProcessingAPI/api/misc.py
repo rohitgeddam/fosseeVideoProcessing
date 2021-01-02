@@ -1,16 +1,14 @@
 # python core modules
-import shutil
-import os
-import datetime
+import shutil, os, datetime
 
 # django imports
 from rest_framework import status
 from rest_framework.response import Response
-from api.models import VideoModel, SrtModel, Chunk, FusedResult, AudioModel
-from api.serializers import VideoFileSerializer, SrtFileSerializer, ChunkSerializer
 from django.conf import settings
 
 # imports for video manipulation
+from api.models import VideoModel, SrtModel, Chunk, FusedResult, AudioModel
+from api.serializers import VideoFileSerializer, SrtFileSerializer, ChunkSerializer
 from api import videoProcessingUtils
 from api import misc
 from moviepy.editor import *

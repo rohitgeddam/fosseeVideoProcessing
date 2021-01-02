@@ -1,5 +1,4 @@
-import time
-import os
+import time, os
 
 from celery import shared_task
 from pydub import AudioSegment
@@ -7,8 +6,7 @@ from moviepy.editor import VideoFileClip
 
 from django.conf import settings
 
-from api import videoProcessingUtils
-from api import misc
+from api import videoProcessingUtils, misc
 from api.models import VideoModel, SrtModel, Chunk, FusedResult, AudioModel
 from api.serializers import VideoFileSerializer, SrtFileSerializer, ChunkSerializer
 

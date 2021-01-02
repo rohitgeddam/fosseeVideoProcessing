@@ -1,8 +1,5 @@
 # python core modules
-import time
-import datetime
-import json
-import os
+import time, datetime, json, os
 
 # 3rd party libraries
 from pydub import AudioSegment
@@ -12,15 +9,15 @@ from moviepy.editor import VideoFileClip
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from api.models import VideoModel, SrtModel, Chunk, FusedResult, AudioModel
-from api.serializers import VideoFileSerializer, SrtFileSerializer, ChunkSerializer
+
 from django.shortcuts import redirect
 from django.conf import settings
 from django.http import HttpResponse
 
 # imports for video manipulation
-from api import videoProcessingUtils
-from api import misc
+from api import videoProcessingUtils, misc
+from api.models import VideoModel, SrtModel, Chunk, FusedResult, AudioModel
+from api.serializers import VideoFileSerializer, SrtFileSerializer, ChunkSerializer
 
 from .tasks import split_video_celery, process_and_generate_final_video_celery
 from celery.result import AsyncResult
@@ -104,6 +101,7 @@ def reupload_audio_chunk(request, chunk_id):
         length_of_audio_chunk = videoProcessingUtils.getVideoLengthInSeconds(
             chunk.endTime, chunk.startTime
         )
+
         audio_chunk_save_path = settings.BASE_DIR + chunk.audioChunkPath
         audio_chunk_path = settings.MEDIA_ROOT + f"re-uploads/{chunk_id}.mp3"
         videoProcessingUtils.trimAudioClipAndSave(

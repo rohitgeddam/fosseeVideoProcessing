@@ -1,10 +1,6 @@
+import subprocess, pysrt, os
+
 from moviepy.editor import *
-
-import subprocess
-import pysrt
-import os
-
-
 from django.conf import settings
 
 

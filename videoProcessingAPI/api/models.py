@@ -52,10 +52,6 @@ class Chunk(models.Model):
     subtitleChunk = models.CharField(
         max_length=500, blank=True, null=False, default=" "
     )
-    # timeInHours = models.IntegerField(default=0,null=False)
-    # timeInMinutes = models.IntegerField(default=0,null=False)
-    # timeInSeconds = models.IntegerField(default=0,null=False)
-    # timeInMilliSeconds = models.IntegerField(default=0,null=False)
     startTime = models.TimeField(
         auto_now=False, auto_now_add=False, null=False, blank=False
     )
