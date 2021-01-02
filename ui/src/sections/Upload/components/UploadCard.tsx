@@ -12,7 +12,6 @@ import { UploadButton } from '..'
 const Card = styled.div`
     display: flex;
     flex-direction: column;
-
     justify-content: space-between;
     align-items: center;
     border: none;
@@ -84,12 +83,10 @@ export const UploadCard = ({handleUpload}: any) => {
             const operationId = response.data.operationId;
             const operationUrl = response.data.operation_url;
             clearError();
-          
             handleUpload(operationId, operationUrl)
 
         } catch (err) {
             setError({isError: true, message: "Failed to upload files"})
-            console.log(err)
         }
     }
 

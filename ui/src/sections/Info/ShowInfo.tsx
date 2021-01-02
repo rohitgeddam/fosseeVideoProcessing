@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 
 import styled from 'styled-components';
 import { api } from '../../lib';
@@ -28,49 +28,71 @@ const Heading = styled.div`
 
 
 
-export const ShowInfo = ({info, operationId}: any) => {
+export const ShowInfo = ({data}: any) => {
     const [showDownloadBtn, setShowDownloadBtn] = useState(false)
-    // const [generateResultResponse, setGenerateResultResponse] = useState<any>(null)
+    const [generateResultResponse, setGenerateResultResponse] = useState<any>(null)
 
-    // const startPolling = async (taskId: string) => {
-    //     isProcessingRef.current = true
-    //     try{
-         
-    //       const response = await api.get(
-    //           `status/${taskId}`
-    //       )
-    //       console.log("RESPONSE TASKID", response)
-    //       if ( response.data.state === 'SUCCESS')
-    //         clearInterval(timerRef.current)
-    //         setGenerateResultResponse(response.data)
-    //         isProcessingRef.current = false
-    //       } catch (err) {
-    //           // setError({isError: true, message: "Failed to upload files"})
-    //           console.log(err)
-    //           isProcessingRef.current = false
-    //           clearInterval(timerRef.current)
-    //       }
-    //   }
+    const timerRef = useRef<any>(null)
 
-    const generateRequest = async () => {
-        try{
-            const response = await api.get(`generate/${operationId}`)
-            console.log(response.data.taskId)
-            // start polling
-            // timerRef.current = setInterval(()=> startPolling(response.data.taskId),3000)
+    const getStatus = async (taskId: string) => {
+        try {
+            const response = await api.get(
+                `status/${taskId}`
+            )
+            return response;
         } catch (err) {
-            console.log(err)
+            throw new Error(err);
+            
         }
     }
+
+
+
+    const polling = async (operationId: string) => {
+        try {
+            const response = await api.get(
+                `generate/${operationId}`
+            )
+          
+            const taskId = response.data.task_id;
+
+            timerRef.current = setInterval( async () => {
+                
+                const response = await getStatus(taskId);
+               
+
+                if (response.data.state === 'SUCCESS'){
+                    const data = response.data.details;
+                    console.log('data adfjoasdjf', data)
+                    // setFlag(false);
+                    setGenerateResultResponse(data);
+                    setShowDownloadBtn(true);
+                    clearInterval(timerRef.current)
+                }
+            },3000)
+        } catch (err) {
+            throw new Error(err);
+            
+        }
+    }
+
+    const handleGenerate = async () => {
+        
+        setShowDownloadBtn(false);
+        polling(data.operationId)
+    }
+
     return (
     <InfoDiv>
         <Heading>Info</Heading>
-        <p>Total Chunks: <b>{info.chunks.length}</b></p>
-        {/* <p>Time Taken To Process: <b>{info.timeTaken}</b></p> */}
-        <Button text={"Generate"} onClick={generateRequest}></Button>
+        <p>Total Chunks: <b>{data.chunks.length}</b></p>
+        <p>Time Taken To Process: <b>{data.timeTaken}</b></p>
+        <Button text={"Generate"} onClick={handleGenerate}></Button>
         {
             showDownloadBtn &&
-            <Button text={"Download"} onClick={()=>console.log("download")}></Button>
+            <a href={`http://localhost:8000${generateResultResponse.download}`} target="_blank" rel="noopener noreferrer" download>
+                <Button text={"Download"}></Button>
+            </a>
         }
     </InfoDiv>
     )

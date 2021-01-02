@@ -13,6 +13,7 @@ const Btn= styled.button`
     font-size: 16px;
     text-align: center;
     outline: none;
+    margin: 10px 0;
     &:hover {
         color: #ffd66b;
     }
