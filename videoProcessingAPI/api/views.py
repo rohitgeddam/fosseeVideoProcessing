@@ -2,6 +2,7 @@
 import time
 import datetime
 import json
+import os
 
 # 3rd party libraries
 from pydub import AudioSegment
@@ -26,25 +27,33 @@ from celery.result import AsyncResult
 
 
 def get_progress(request, task_id):
-    print(task_id)
+
     result = AsyncResult(task_id)
+
     response_data = {
         "state": result.state,
         "details": result.info,
     }
+
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
 @api_view(["POST"])
 def upload_files_to_server(request):
     if request.method == "POST":
-        serializeVideo, serializeSrt = misc.handleUploadedFilesAndSave(request)
-        message = {
-            "operationId": serializeVideo.data["id"],
-            "message": "files uploaded successfully",
-            "operation_url": f"/api/process/{serializeVideo.data['id']}",
-        }
-    return Response(message, status=status.HTTP_201_CREATED)
+        serializeVideo, serializeSrt, err_message = misc.handleUploadedFilesAndSave(
+            request
+        )
+        if not err_message:
+            payload = {
+                "operationId": serializeVideo.data["id"],
+                "message": "files uploaded successfully",
+                "operation_url": f"/api/process/{serializeVideo.data['id']}",
+            }
+            return Response(payload, status=status.HTTP_201_CREATED)
+        else:
+            payload = {"message": err_message}
+            return Response(payload, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["GET"])

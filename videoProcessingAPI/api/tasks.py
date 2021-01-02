@@ -49,8 +49,9 @@ def split_video_celery(self, id):
     misc.clean_up_dirs(srtFile.path, videoFile.path)
     # building response object
     message = {
+        "operationId": id,
         "message": "success",
-        "time(sec)": f"Time: {time.time() - start}",
+        "timeTaken": f"{time.time() - start}",
         "path": f"/api/getdetails/{id}",
         "downloadUrl": f"/api/download/{id}",
         "chunks": serializeChunk.data,
@@ -60,7 +61,7 @@ def split_video_celery(self, id):
 
 
 @shared_task(bind=True)
-def process_and_generate_final_video_celery(operationId):
+def process_and_generate_final_video_celery(self, operationId):
     bashFiles_path = settings.MEDIA_ROOT + "bashFiles"
     misc.createDirectoryIfNotExists(bashFiles_path)
     # creating directory to bashFiles with operationId as name
@@ -125,7 +126,7 @@ def process_and_generate_final_video_celery(operationId):
         result.save()
 
         return {
-            "message": "combined all video anc audio chunk into one file",
+            "message": "combined all video and audio chunk into one file",
             "name_of_file": result.videoName,
             "download": result.videoUrl,
         }

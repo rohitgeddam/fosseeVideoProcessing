@@ -17,15 +17,10 @@ from moviepy.editor import *
 
 
 listOfResponses = {
-    "fieldRequired": Response(
-        {"message": "Field is Required"}, status=status.HTTP_400_BAD_REQUEST
-    ),
-    "invalidFileFormat": Response(
-        {
-            "message": "invalid file type/s",
-        },
-        status=status.HTTP_400_BAD_REQUEST,
-    ),
+    "fieldRequired": {"message": "Field is Required"},
+    "invalidFileFormat": {
+        "message": "invalid file type/s",
+    },
 }
 
 
@@ -47,14 +42,14 @@ def handleUploadedFilesAndSave(request):
             path=os.path.join(settings.MEDIA_ROOT, f"srts/{request.FILES['srt'].name}"),
         )
     except:
-        return listOfResponses["fieldRequired"]
+        return (None, None, listOfResponses["fieldRequired"])
 
     if misc.checkExtensionOfFileFromRequestObject(
         request, "video", ".mp4"
     ) and misc.checkExtensionOfFileFromRequestObject(request, "srt", ".srt"):
         pass
     else:
-        return listOfResponses["invalidFileFormat"]
+        return (None, None, listOfResponses["invalidFileFormat"])
 
     videoInstance.save()
     srtInstance.save()
@@ -62,7 +57,7 @@ def handleUploadedFilesAndSave(request):
     serializeVideo = misc.serializeObject(VideoFileSerializer, videoInstance)
     serializeSrt = misc.serializeObject(SrtFileSerializer, srtInstance)
 
-    return (serializeVideo, serializeSrt)
+    return (serializeVideo, serializeSrt, None)
 
 
 def serializeObject(serializerClass, objectToSerialize, many=False):
@@ -234,7 +229,7 @@ def clean_up_dirs(*args):
 
 def clean_up_files(*args):
     for path in args:
-        while os.path.exits(path):
+        while os.path.exists(path):
             os.remove(path)
 
 
