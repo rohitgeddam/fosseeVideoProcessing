@@ -1,2 +1,0 @@
-const LOCAL_HOST_URL_WITH_PORT = "http://127.0.0.1:8000"
-
