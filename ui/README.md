@@ -1,5 +1,22 @@
 # Frontend for the videoCutter app.
+* To install all the packages
+```js
+yarn install
+npm install
+```
+* To run the development server
+```js
+yarn start
+npm start
+```
 
+* To make a build for production
+```js
+yarn build
+npm  build
+```
+
+# Component Tree
 ![ComponentTree](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/v2/images/ReactComponentTree.png)
 
 
@@ -30,3 +47,6 @@
 * you will then see a download button. click on the download button to download final compiled  video file (.mp4)
 
 ![ui-5](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/v2/images/ui-5.png)
+
+
+![ui-6](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/v2/images/ui-6.png)
