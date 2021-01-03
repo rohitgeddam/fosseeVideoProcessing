@@ -7,6 +7,5 @@ pysrt==1.1.2
 moviepy==1.0.3
 django-cors-headers==3.6.0
 djangorestframework==3.12.2
-psycopg2==2.7.5
 python-decouple
 django_celery_results
