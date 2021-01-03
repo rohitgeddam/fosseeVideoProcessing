@@ -16,10 +16,9 @@ const Container = styled.div`
 
 const App: React.FC = () => {
     const [onUploadScreen, setOnUploadScreen] = useState<boolean>(true);
+    const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
     const [processingResponse, setProcessingResponse] = useState<null | ProcessingResponseType>(null);
-
-    const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
     if (isProcessing) {
         return <LoadingScreen text={'Please wait. Processing might take several minutes'} />;

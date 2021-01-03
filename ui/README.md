@@ -1,46 +1,32 @@
-# Getting Started with Create React App
+# Frontend for the videoCutter app.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![ComponentTree](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/ReactComponentTree.png)
 
-## Available Scripts
 
-In the project directory, you can run:
+## Using the UI
 
-### `yarn start`
+#### Step-1
+*   upload files to the server
+*   video file ( .mp4 )
+*   srt file ( .srt )
+  
+![ui-1](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/ui-1.png)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+##### you will see the processing screen below
+![ui-2](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/ui-2.png)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+##### when the file is processed you will see screen as below
 
-### `yarn test`
+![ui-3](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/ui-3.png)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### step-2
+* you can upload a (.mp3) file or use the mic to record and swap an audio chunk
+* **Note** - if the uploaded audio file is larger in time frame than that chunk. the audio will be trimmed down.
 
-### `yarn build`
+![ui-4](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/ui-4.png)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### step-3
+* When you are done replacing audio chunks click on compile button
+* you will then see a download button. click on the download button to download final compiled  video file (.mp4)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+![ui-5](https://github.com/rohitgeddam/fosseeVideoProcessing/blob/master/images/ui-5.png)
