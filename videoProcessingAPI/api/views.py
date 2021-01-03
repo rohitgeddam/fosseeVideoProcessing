@@ -16,14 +16,15 @@ from django.http import HttpResponse
 
 # imports for video manipulation
 from api import videoProcessingUtils, misc
-from api.models import VideoModel, SrtModel, Chunk, FusedResult, AudioModel
-from api.serializers import VideoFileSerializer, SrtFileSerializer, ChunkSerializer
+from api.models import VideoModel, Chunk, AudioModel
+from api.serializers import ChunkSerializer
 
 from .tasks import split_video_celery, process_and_generate_final_video_celery
 from celery.result import AsyncResult
 
 
 def get_progress(request, task_id):
+    """Get Celery Task Status"""
 
     result = AsyncResult(task_id)
 
@@ -37,6 +38,8 @@ def get_progress(request, task_id):
 
 @api_view(["POST"])
 def upload_files_to_server(request):
+    """Upload files to server"""
+
     if request.method == "POST":
         serializeVideo, serializeSrt, err_message = misc.handleUploadedFilesAndSave(
             request
@@ -55,6 +58,8 @@ def upload_files_to_server(request):
 
 @api_view(["GET"])
 def get_video_details(request, id):
+    """Get details of video"""
+
     if request.method == "GET":
         video = VideoModel.objects.get(pk=id)
         chunks = video.rel.all()
@@ -69,6 +74,8 @@ def get_video_details(request, id):
 
 @api_view(["GET"])
 def split_video(request, id):
+    """Split video into chunks"""
+
     if request.method == "GET":
         task = split_video_celery.delay(id)
         message = {
@@ -79,11 +86,13 @@ def split_video(request, id):
 
 @api_view(["POST"])
 def reupload_audio_chunk(request, chunk_id):
+    """Reupload audio chunk"""
+
     if request.method == "POST":
         # upload reuploaded audio chunk and resize it.
         try:
             chunk = Chunk.objects.get(pk=chunk_id)
-        except:
+        except Exception:
             return Response({"message": "cannot retrieve from database"})
         # remove files already present for uploading those files again.
         # we can only reupload audio files
@@ -112,6 +121,8 @@ def reupload_audio_chunk(request, chunk_id):
 
 @api_view(["GET"])
 def process_and_generate_final_video(request, operationId):
+    """Get the final downloadable video file"""
+
     task = process_and_generate_final_video_celery.delay(operationId)
     message = {
         "task_id": task.task_id,

@@ -1,10 +1,9 @@
-import os
-
 from django.db import models
-from django.core.files.storage import FileSystemStorage
 
 
 class AudioModel(models.Model):
+    """Db model for Audio"""
+
     audio = models.FileField(upload_to="re-uploads/", blank=False)
     path = models.CharField(max_length=500, blank=False, default="~/")
 
@@ -13,6 +12,8 @@ class AudioModel(models.Model):
 
 
 class VideoModel(models.Model):
+    """Db model for Video"""
+
     video = models.FileField(upload_to="videos/", blank=False)
     path = models.CharField(max_length=500, blank=False, default="~/")
 
@@ -21,6 +22,8 @@ class VideoModel(models.Model):
 
 
 class SrtModel(models.Model):
+    """Db model for Srt"""
+
     srt = models.FileField(upload_to="srts/", null=False)
     path = models.CharField(max_length=500, null=False, default="~/")
 
@@ -29,6 +32,8 @@ class SrtModel(models.Model):
 
 
 class Chunk(models.Model):
+    """Db model for Audio Video Chunks"""
+
     operationId = models.ForeignKey(
         VideoModel,
         default=1,
@@ -61,6 +66,8 @@ class Chunk(models.Model):
 
 
 class FusedResult(models.Model):
+    """Db model for Final Downloadable Video file"""
+
     operationId = models.ForeignKey(
         VideoModel, default=1, verbose_name="operationId", on_delete=models.SET_DEFAULT
     )

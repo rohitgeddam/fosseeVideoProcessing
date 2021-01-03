@@ -5,6 +5,8 @@ from django.conf import settings
 
 
 class SRT:
+    """SRT class defination"""
+
     def __init__(self, path):
         self.instance = pysrt.open(path)
 
@@ -16,11 +18,15 @@ class SRT:
 
 
 class VideoClip:
+    """VideoClip class defination"""
+
     def __init__(self, path):
         self.path = path
         self.instance = VideoFileClip(os.path.join(settings.MEDIA_ROOT, path))
 
     def extractAudioFromVideoAndSave(self, path, saveAs):
+        """Extract Audio from video file and save it"""
+
         command = (
             f"ffmpeg -i {self.path} -ab 160k -ac 2 -ar 44100 -vn {path}/{saveAs} -y"
         )
@@ -28,17 +34,23 @@ class VideoClip:
         return f"{path}/{saveAs}"
 
     def removeAudioFromVideoAndSave(self, path, saveAs):
+        """Strip away audio from the video file and save"""
+
         command = f"ffmpeg -i {self.path} -vcodec copy -an {path}/{saveAs} -y"
         subprocess.call(command, shell=True)
         return f"{path}/{saveAs}"
 
 
 def mergeAudiosForDownload(audi_file_path, merged_audio_destination_path):
+    """Merge all audio files"""
+
     command_for_merging_audios = f"ffmpeg -f concat -safe 0 -i {audi_file_path} -c copy {merged_audio_destination_path} -y"
     subprocess.call(command_for_merging_audios, shell=True)
 
 
 def mergeVideoForDownload(vid_file_path, merged_video_destination_path):
+    """Merge all video files"""
+
     command_for_merging_videos = f"ffmpeg -f concat -safe 0 -i {vid_file_path} -c copy {merged_video_destination_path} -y"
     subprocess.call(command_for_merging_videos, shell=True)
 
@@ -46,17 +58,22 @@ def mergeVideoForDownload(vid_file_path, merged_video_destination_path):
 def mergeVideoAndAudioToGetDownloadFile(
     operationId, videoPath, audioPath, pathToSaveTo
 ):
+    """Merge audio and video files"""
+
     command_for_merging_audio_video = f"ffmpeg -i {videoPath} -i {audioPath} -c copy {pathToSaveTo}{operationId}.mp4 -y"
     subprocess.call(command_for_merging_audio_video, shell=True)
 
 
 def trimAudioClipAndSave(path, startingTime, length, save_path):
+    """Trim the audio clip and save"""
 
     command = f"ffmpeg -ss {startingTime} -i {path} -t {length} -c copy {save_path} -y"
     subprocess.call(command, shell=True)
 
 
 def getVideoLengthInSeconds(endTime, startTime):
+    """Calculate the length of video in seconds"""
+
     total = 0
     total += (endTime.hour - startTime.hour) * 60 * 60
     total += (endTime.minute - startTime.minute) * 60
@@ -66,7 +83,8 @@ def getVideoLengthInSeconds(endTime, startTime):
 
 
 def convertTimeToSeconds(hours, minutes, seconds, milliseconds):
-    """convert time into seconds"""
+    """Convert Given time to time in seconds"""
+
     h = int(hours) * 3600
     minu = int(minutes) * 60
     sec = int(seconds)

@@ -14,11 +14,14 @@ from django.conf import settings
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from api.models import VideoModel, SrtModel, Chunk, FusedResult, AudioModel
+from api.models import VideoModel, SrtModel, AudioModel
 
 
 class TestViews(APITestCase):
+    """Views Test suite"""
+
     def setUp(self):
+        """Setup for all tests"""
 
         self.client = APIClient()
         self.video_path = os.path.join(settings.BASE_DIR, "test_files/test.mp4")
@@ -49,28 +52,8 @@ class TestViews(APITestCase):
             path=self.reupload_audio_path,
         )
 
-    # def _create_upload_test_file(self,video_path,srt_path):
-    #
-    #
-    #     video_file = SimpleUploadedFile(video_path,b"file_content",content_type="video/mp4")
-    #     srt_file = SimpleUploadedFile(srt_path,b"file_content",content_type="text/plain")
-    #
-    #
-    #     return {
-    #         "video" : video_file,
-    #         "srt" : srt_file
-    #     }
-
-    # def _create_reupload_test_file(self, audio_path):
-    #
-    #
-    #     audio_chunk = SimpleUploadedFile(audio_path,b"file_content",content_type="audio/mp3")
-    #
-    #     return {
-    #         "file" : audio_chunk,
-    #     }
-
     def test_upload_file(self):
+        """Test upload view"""
 
         url = reverse("file-upload")
 
@@ -84,6 +67,7 @@ class TestViews(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_video_split(self):
+        """Test video split view"""
 
         operation_id = VideoModel.objects.all().first().pk
 
@@ -95,6 +79,7 @@ class TestViews(APITestCase):
     #
 
     def test_get_details(self):
+        """Test get details view"""
 
         operation_id = VideoModel.objects.all().first().pk
 
@@ -104,6 +89,8 @@ class TestViews(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_download(self):
+        """Test download view"""
+
         operation_id = VideoModel.objects.all().first().pk
         url = reverse("download", kwargs={"operationId": operation_id})
         response = self.client.get(url)

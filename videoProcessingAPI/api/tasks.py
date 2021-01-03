@@ -7,12 +7,14 @@ from moviepy.editor import VideoFileClip
 from django.conf import settings
 
 from api import videoProcessingUtils, misc
-from api.models import VideoModel, SrtModel, Chunk, FusedResult, AudioModel
-from api.serializers import VideoFileSerializer, SrtFileSerializer, ChunkSerializer
+from api.models import VideoModel, SrtModel, Chunk, FusedResult
+from api.serializers import ChunkSerializer
 
 
 @shared_task(bind=True)
 def split_video_celery(self, id):
+    """Celery Task to split video into chunks"""
+
     start = time.time()
 
     videoFile = VideoModel.objects.get(id=id)
@@ -60,6 +62,9 @@ def split_video_celery(self, id):
 
 @shared_task(bind=True)
 def process_and_generate_final_video_celery(self, operationId):
+    """Celery task to stitch all chunks together
+    and generate a final downloadable video"""
+
     bashFiles_path = settings.MEDIA_ROOT + "bashFiles"
     misc.createDirectoryIfNotExists(bashFiles_path)
     # creating directory to bashFiles with operationId as name
@@ -79,17 +84,11 @@ def process_and_generate_final_video_celery(self, operationId):
         final_download_path = settings.MEDIA_ROOT + "downloadable/"
         misc.createDirectoryIfNotExists(final_download_path)
 
-        # check to see if files already exist if exists remove it
-        # removeAndCreateDirectoryInSamePath(merged_audio_destination_path,create=False)
-
-        # if os.path.exists(merged_audio_destination_path):
-        #     os.remove(merged_audio_destination_path)
-
         misc.clean_up_dirs(merged_audio_destination_path)
 
         misc.writePathsToTxtFileToUseWithFFMPEG(chunks, audi_file_path, vid_file_path)
 
-        # use the above files to combne audios and videos
+        # use the above files to combine audios and videos
         videoProcessingUtils.mergeAudiosForDownload(
             audi_file_path, merged_audio_destination_path
         )
@@ -129,5 +128,5 @@ def process_and_generate_final_video_celery(self, operationId):
             "download": result.videoUrl,
         }
 
-    except:
+    except Exception:
         return {"message": "Error occured while processing."}

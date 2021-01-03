@@ -2,13 +2,11 @@
 import shutil, os, datetime
 
 # django imports
-from rest_framework import status
-from rest_framework.response import Response
 from django.conf import settings
 
 # imports for video manipulation
-from api.models import VideoModel, SrtModel, Chunk, FusedResult, AudioModel
-from api.serializers import VideoFileSerializer, SrtFileSerializer, ChunkSerializer
+from api.models import VideoModel, SrtModel, Chunk
+from api.serializers import VideoFileSerializer, SrtFileSerializer
 from api import videoProcessingUtils
 from api import misc
 from moviepy.editor import *
@@ -23,10 +21,13 @@ listOfResponses = {
 
 
 def checkExtensionOfFileFromRequestObject(requestObject, nameOfField, extension):
+    """Check file extension from the request object"""
+
     return requestObject.FILES[nameOfField].name.endswith(extension)
 
 
 def handleUploadedFilesAndSave(request):
+    """Handle uploaded files and save them"""
 
     try:
         videoInstance = VideoModel(
@@ -39,7 +40,7 @@ def handleUploadedFilesAndSave(request):
             srt=request.FILES["srt"],
             path=os.path.join(settings.MEDIA_ROOT, f"srts/{request.FILES['srt'].name}"),
         )
-    except:
+    except Exception:
         return (None, None, listOfResponses["fieldRequired"])
 
     if misc.checkExtensionOfFileFromRequestObject(
@@ -59,10 +60,14 @@ def handleUploadedFilesAndSave(request):
 
 
 def serializeObject(serializerClass, objectToSerialize, many=False):
+    """Serialize object using the provided serializer class"""
+
     return serializerClass(objectToSerialize, many=many)
 
 
 def removeAndCreateDirectoryInSamePath(dirPath, create=True):
+    """Remove and Create New Directory in the given path"""
+
     if os.path.exists(dirPath):
         shutil.rmtree(dirPath)
     if create is True:
@@ -70,6 +75,7 @@ def removeAndCreateDirectoryInSamePath(dirPath, create=True):
 
 
 def createDirectoryIfNotExists(pathToDirectory, dirName=""):
+    """Create a new directory if the directory dosen't exists"""
 
     pathToCheckFor = pathToDirectory + dirName
     if not os.path.exists(pathToCheckFor):
@@ -78,6 +84,8 @@ def createDirectoryIfNotExists(pathToDirectory, dirName=""):
 
 
 def splitAudioAndVideoIntoChunk(videoToSplit, audioToSplit, chunkData):
+    """Split Audio and Video into chunks"""
+
     splitedVideoChunk = videoToSplit.subclip(
         videoProcessingUtils.convertTimeToSeconds(
             chunkData.start.hours,
@@ -113,6 +121,9 @@ def splitAudioAndVideoIntoChunk(videoToSplit, audioToSplit, chunkData):
 
 
 def writePathsToTxtFileToUseWithFFMPEG(chunks, audioFilePath, videoFilePath):
+    """Write file path of audio and video files into a text file
+    to use with the FFMPEG commandline utility"""
+
     audiFile = open(audioFilePath, "a")
     vidFile = open(videoFilePath, "a")
     # removeing the last slash as its causing problem
@@ -130,6 +141,8 @@ def writePathsToTxtFileToUseWithFFMPEG(chunks, audioFilePath, videoFilePath):
 
 
 def create_audio_video_dirs():
+    """Create Audio and Video directories"""
+
     pathToOnlyAudioDir = misc.createDirectoryIfNotExists(
         settings.MEDIA_ROOT, "onlyAudio"
     )
@@ -144,6 +157,7 @@ def create_audio_video_dirs():
 def extract_video_audio_seperately_save(
     id, video, pathToOnlyAudioDir, pathToOnlyVideoDir
 ):
+    """Save Video And Audio into seperate files"""
 
     onlyVideoPath = video.removeAudioFromVideoAndSave(pathToOnlyVideoDir, f"{id}.mp4")
     onlyAudioPath = video.extractAudioFromVideoAndSave(pathToOnlyAudioDir, f"{id}.mp3")
@@ -151,6 +165,8 @@ def extract_video_audio_seperately_save(
 
 
 def create_dirs_for_splits(id):
+    """Create directories to save the chunks"""
+
     pathToStoreChunksOfSplitedVideo = settings.MEDIA_ROOT + f"videoSplit/{id}"
     pathToStoreChunksOfSplitedAudio = settings.MEDIA_ROOT + f"audioSplit/{id}"
 
@@ -159,6 +175,8 @@ def create_dirs_for_splits(id):
 
 
 def split_by_chunk(id, srtData, video, audio, videoFile):
+    """Split video into chunks using srt file data"""
+
     i = 1
     for chunk in srtData:
         try:
@@ -206,6 +224,7 @@ def split_by_chunk(id, srtData, video, audio, videoFile):
 
 
 def get_local_paths_with_i(id, i):
+    """Get the local path with index"""
 
     audioChunkLocalPath = settings.MEDIA_ROOT + f"audioSplit/{id}/{i}.mp3"
     videoChunkLocalPath = settings.MEDIA_ROOT + f"videoSplit/{id}/{i}.mp4"
@@ -213,12 +232,16 @@ def get_local_paths_with_i(id, i):
 
 
 def get_url_paths_with_i(id, i):
+    """Get the Url path with index"""
+
     audioChunkUrlPath = settings.MEDIA_URL + f"audioSplit/{id}/{i}.mp3"
     videoChunkUrlPath = settings.MEDIA_URL + f"videoSplit/{id}/{i}.mp4"
     return (audioChunkUrlPath, videoChunkUrlPath)
 
 
 def clean_up_dirs(*args):
+    """Delete Directories"""
+
     # deleting original files to save space
     for path in args:
         if os.path.exists(path):
@@ -226,12 +249,16 @@ def clean_up_dirs(*args):
 
 
 def clean_up_files(*args):
+    """Delete Files"""
+
     for path in args:
         while os.path.exists(path):
             os.remove(path)
 
 
 def get_merged_destination_paths(operationId):
+    """Get the final video path"""
+
     audio_path = settings.MEDIA_ROOT + f"audioSplit/{operationId}/mergedAUDIO.mp3"
     video_path = settings.MEDIA_ROOT + f"videoSplit/{operationId}/mergedVIDEO.mp4"
     return (audio_path, video_path)
